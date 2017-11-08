@@ -67,6 +67,8 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
         handler = new Handler();
         fetchDataTask = new FetchDataTask(getApplicationContext(), this);
 
+        ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                REQUEST_LOCATION_RESPONSE);
         //CHECK IF IT IS A FRESH LAUNCH OF THE APPLICATION OR NOT
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         FIRST_TIME_LAUNCH = sharedPreferences.getBoolean(FIRST_LAUNCH_KEY, true);
@@ -80,8 +82,6 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                     .addApi(LocationServices.API)
                     .build();
         }
-        //FROM THIS METHOD, GOES TO ON CONNECTED IF SUCCESSFUL OR CONNECTION FAILED IF UNSUCCESSFUL
-        googleApiClient.connect();
     }
 
 
@@ -117,60 +117,55 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
     //MAINLY DOES GETTING DEVICE LOCATION FROM GOOGLE API
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
-        requestResponse.run();
+        getLocationData();
     }
 
-    Runnable requestResponse  = new Runnable() {
-        @Override
-        public void run() {
-            try {
+    private void getLocationData() {
 
-                LocationRequest request = new LocationRequest();
-                request.setInterval(1000);
-                //HIGH ACCURACY RETURNS LOCATIONS
-                request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                if (ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        try {
+            LocationRequest request = new LocationRequest();
+            request.setInterval(1000);
+            //HIGH ACCURACY RETURNS LOCATIONS
+            request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            if (ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this,
-                            Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                        Log.d("SHOW EXPLANATION", "SHOW PERMISSION: ");
+                if (ActivityCompat.shouldShowRequestPermissionRationale(SplashActivity.this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                    Log.d("SHOW EXPLANATION", "SHOW PERMISSION: ");
 
-                    } else {
-                        ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                REQUEST_LOCATION_RESPONSE);
-                    }
+                } else {
+                    ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            REQUEST_LOCATION_RESPONSE);
                 }
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, SplashActivity.this);
-                Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-
-                if (lastLocation != null) {
-                    double lat = lastLocation.getLatitude();
-                    double lon = lastLocation.getLongitude();
-                    Geocoder geoCoder = new Geocoder(SplashActivity.this);
-                    Log.d(" " + lat + " " + lon, "onConnected: ");
-                    List<Address> list = geoCoder.getFromLocation(lat, lon, 10);
-
-                    if (list.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "An Error Occured but you can search for city manually", Toast.LENGTH_SHORT).show();
-                        showSearchDialogue();
-                        return;
-                    } else {
-                        Log.d(list.get(0).getCountryName() + "", "FETCHING DATA: ");
-                        fetchDataTask.execute(Utilities.TODAY_WEATHER, list.get(0).getLocality(), lat + "", lon + "");
-                    }
-                }
-            } catch (SecurityException locationError) {
-                locationError.printStackTrace();
-                Log.d("LOCATION SECURITY ERROR", "ERROR: ");
-                Toast.makeText(getApplicationContext(), "We need to access your device location to load the data, but you can also search a city !!!", Toast.LENGTH_SHORT).show();
-                showSearchDialogue();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.d("ERROR GETTING ADDRESS", "ERROR: ");
             }
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, SplashActivity.this);
+            Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+            if (lastLocation != null) {
+                double lat = lastLocation.getLatitude();
+                double lon = lastLocation.getLongitude();
+                Geocoder geoCoder = new Geocoder(SplashActivity.this);
+                Log.d(" " + lat + " " + lon, "onConnected: ");
+                List<Address> list = geoCoder.getFromLocation(lat, lon, 10);
+
+                if (list.size() == 0) {
+                    Toast.makeText(getApplicationContext(), R.string.error_location_not_found, Toast.LENGTH_SHORT).show();
+                    showSearchDialogue();
+                    return;
+                } else {
+                    Log.d(list.get(0).getCountryName() + "", "FETCHING DATA: ");
+                    fetchDataTask.execute(Utilities.TODAY_WEATHER, list.get(0).getLocality(), lat + "", lon + "");
+                }
+            }
+        } catch (SecurityException locationError) {
+            locationError.printStackTrace();
+            Log.d("LOCATION SECURITY ERROR", "ERROR: ");
+            showExplanationDialogue();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("ERROR GETTING ADDRESS", "ERROR: ");
         }
-    };
+    }
 
     //DIALOGUE RESULT TO REQUEST LOCATION PERMISSION FROM USER
     @Override
@@ -183,10 +178,14 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
             case REQUEST_LOCATION_RESPONSE:
                 if (grantResults.length > 0) {
                     Log.d("GRANTED", "onRequestPermissionsResult: ");
-                    requestResponse.run();
-                }else{
+                    if(googleApiClient.isConnected()) {
+                        getLocationData();
+                    }else{
+                        googleApiClient.connect();
+                    }
+                } else {
                     Log.d("REFUSED", "onRequestPermissionsResult: ");
-                    showSearchDialogue();
+                    showExplanationDialogue();
                 }
         }
     }
@@ -198,17 +197,34 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getApplicationContext(),"We were unable to retrieve your location, Please try again later or search",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.error_message_obtaining_location, Toast.LENGTH_SHORT).show();
         showSearchDialogue();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("+++++++++++++++++++"+location.toString(), "LOCATION CHANGED: ");
+        Log.d("+++++++++++++++++++" + location.toString(), "LOCATION CHANGED: ");
     }
 
+    private void showExplanationDialogue(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
+        builder.setMessage("We need to access device location to get weather data but you can also search manually!!");
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
 
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                showSearchDialogue();
+            }
+        });
 
+        builder.create().show();
+    }
     //SEARCH DIALOGUE IS ONLY SHOWN WHEN LOCATION SEARCH FAILED
     private void showSearchDialogue() {
 
@@ -252,11 +268,6 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                 });
             }
         });
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                searchDialog.show();
-            }
-        }, 1500);
+        searchDialog.show();
     }
 }

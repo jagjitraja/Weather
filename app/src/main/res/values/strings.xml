@@ -90,4 +90,6 @@
     <string name="city_weather">City Weather</string>
     <string name="saved_cities">Saved Cities</string>
     <string name="settings">Settings</string>
+    <string name="error_message_obtaining_location">We were unable to retrieve your location, Please try again later or search</string>
+    <string name="error_location_not_found">An Error Occured but you can search for city manually</string>
 </resources>
