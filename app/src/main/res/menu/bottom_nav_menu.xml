@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/city_weather"
+        android:id="@+id/details_tab"
+        android:icon="@drawable/details"/>
+    <item android:title="@string/saved_cities"
+        android:id="@+id/saved_cities_tab"
+        android:icon="@drawable/ic_reorder_black_48dp"/>
+    <item android:title="@string/settings"
+        android:id="@+id/settings_tab"
+        android:icon="@drawable/ic_settings_black_48dp"/>
+</menu>

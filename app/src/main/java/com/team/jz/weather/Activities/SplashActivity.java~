@@ -1,0 +1,130 @@
+package com.team.jz.weather.Activities;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.team.jz.weather.NetworkConnections.DownloadCallback;
+import com.team.jz.weather.NetworkConnections.FetchDataTask;
+import com.team.jz.weather.R;
+import com.team.jz.weather.Weather.Utilities;
+import com.team.jz.weather.Weather.WeatherReading;
+
+/**
+ * An example full-screen activity that shows and hides the system UI (i.e.
+ * status bar and navigation/system bar) with user interaction.
+ */
+public class SplashActivity extends AppCompatActivity implements DownloadCallback {
+
+    private static final String DEFAULT_SEARCH_CITY = "firstSearched" ;
+    private WeatherReading fetchedWeatherReading;
+    private boolean FIRST_TIME_LAUNCH;
+    private String SHARED_PREFS = "sharedPrefs";
+    private String FIRST_LAUNCH_KEY = "firstLaunch";
+    public static final String WEATHER_READING_KEY = "weatherReading";
+    private FetchDataTask fetchDataTask;
+    private  SharedPreferences sharedPreferences;
+    private Handler handler;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+
+        handler = new Handler();
+        fetchDataTask  = new FetchDataTask(getApplicationContext(), this);
+        sharedPreferences  = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+
+        //CONTROL THE DISPLAY OF SEARCH DIALOG SUCH THAT IT DISPLAYS ONLY ON THE FIRST LAUNCH OF THE APP
+        FIRST_TIME_LAUNCH = sharedPreferences.getBoolean(FIRST_LAUNCH_KEY, true);
+
+        sharedPreferences.edit().putBoolean(FIRST_LAUNCH_KEY, false).apply();
+
+        //SHOW SEARCH DIALOGUE ONLY ON A FIRST TIME LAUNCH
+        if (FIRST_TIME_LAUNCH) {
+            showSearchDialogue();
+        }else{
+            //GO TO MAIN IF IT IS NOT A FIRST LAUNCH USING THE CITY FROM THE FIRST SEARCG
+            String city = sharedPreferences.getString(DEFAULT_SEARCH_CITY,"Kamloops");
+            fetchDataTask.execute(Utilities.TODAY_WEATHER, city);
+            handler.postDelayed(goToMainActivityRunnable,800);
+        }
+    }
+
+    private void showSearchDialogue() {
+        final AlertDialog.Builder searchDialogBuilder = new AlertDialog.Builder(SplashActivity.this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.search_city_dialog, null);
+        searchDialogBuilder.setView(dialogView);
+
+        final EditText editText = (EditText) dialogView.findViewById(R.id.city_search);
+        searchDialogBuilder.setPositiveButton(R.string.search, null);
+        searchDialogBuilder.setCancelable(false);
+
+        final AlertDialog searchDialog = searchDialogBuilder.create();
+
+        searchDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button searchButton = searchDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                searchButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        String c = editText.getText().toString();
+                        if (c.length() > 0) {
+                            fetchDataTask.execute(Utilities.TODAY_WEATHER, c);
+                            //SAVE THE FIRST SEARCHED CITY IN SHARED PREFERENCES
+                            sharedPreferences.edit().putString(DEFAULT_SEARCH_CITY,c).apply();
+                            searchDialog.dismiss();
+                            handler.postDelayed(goToMainActivityRunnable, 1500);
+
+                        } else {
+                            AlertDialog.Builder errorBuilder = new AlertDialog.Builder(SplashActivity.this);
+                            errorBuilder.setTitle("Please type in a search criteria");
+                            errorBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            errorBuilder.create().show();
+                        }
+                    }
+                });
+            }
+        });
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                searchDialog.show();
+            }
+        }, 3000);
+
+    }
+
+    @Override
+    public void finishedDownloading(WeatherReading weatherReading) {
+        fetchedWeatherReading = weatherReading;
+    }
+
+    private Runnable goToMainActivityRunnable = new Runnable() {
+        @Override
+        public void run() {
+            //GO TO MAIN ACTIVITY
+            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+            intent.putExtra(WEATHER_READING_KEY, fetchedWeatherReading);
+            startActivity(intent);
+            SplashActivity.this.finish();
+        }
+    };
+}

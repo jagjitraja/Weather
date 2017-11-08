@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="50dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    app:layout_constraintLeft_toLeftOf="parent"
+    android:padding="10dp"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/weather_temperature"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <TextView
+        android:layout_width="25dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/pressure_val"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:fontFamily="cursive"
+        android:textSize="20dp" />
+
+    <TextView
+        android:layout_width="25dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_height="50dp"/>
+
+    <TextView
+        android:id="@+id/humidity_val"
+        android:layout_weight="2"
+        android:fontFamily="cursive"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"/>
+
+    <TextView
+        android:layout_width="25dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:layout_height="50dp" />
+
+    <TextView
+        android:id="@+id/wind_val"
+        android:layout_weight="2"
+        android:layout_gravity="center"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:fontFamily="cursive"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp" />
+</LinearLayout>
