@@ -40,17 +40,30 @@ public class FetchDataTask extends AsyncTask<String, Integer, WeatherReading> {
         //strings[0] = TODAY OR FORECAST
         //strings[1] = CITY OR ZIP
         WeatherReading weatherReading = null;
-        if (strings.length<2){
+        if (strings.length<4){
             return null;
         }
 
             if (strings[0].equals(Utilities.TODAY_WEATHER)){
                 try {
-                    Uri todayUri = Uri.parse(Utilities.CURRENT_WEATHER_BASE_URL).buildUpon().
-                            appendQueryParameter(Utilities.CITY_PARAMETER,strings[1]).
-                            appendQueryParameter(Utilities.FORMAT_PARAMETER,Utilities.FORMAT_VALUE).
-                            appendQueryParameter(Utilities.UNITS_PARAMETER,Utilities.UNITS_VALUE).
-                            appendQueryParameter(Utilities.API_PARAMETER,Utilities.OPEN_WEATHER_API_KEY).build();
+                    Uri todayUri;
+                    if(strings.length>2) {
+                        //IF LATITUDE AND LONGITUDE ARE AVAILABLE, USE TEHM TO BUUILD THE URI
+                        todayUri = Uri.parse(Utilities.CURRENT_WEATHER_BASE_URL).buildUpon().
+                                appendQueryParameter(Utilities.LATITUDE_PARAMETER, strings[2]).
+                                appendQueryParameter(Utilities.LONGITUDE_PARAMETER, strings[3]).
+                                appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
+                                appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
+                                appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).build();
+                    }
+                    else{
+                        //IF LATITUDE AND LONGITUDE ARE NOT AVAOLABLE, USE CITY NAME TO BUILD URI
+                        todayUri = Uri.parse(Utilities.CURRENT_WEATHER_BASE_URL).buildUpon().
+                                appendQueryParameter(Utilities.CITY_PARAMETER, strings[1]).
+                                appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
+                                appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
+                                appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).build();
+                    }
 
                     URL url = new URL(todayUri.toString());
 

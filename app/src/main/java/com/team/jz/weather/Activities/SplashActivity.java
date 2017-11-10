@@ -91,6 +91,8 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
         fetchedWeatherReading = weatherReading;
         //GO TO MAIN ACTIVITY
         handler.postDelayed(goToMainActivityRunnable, 1500);
+        fetchDataTask = null;
+        System.gc();
     }
 
     //RUNNABLE TO GO TO MAIN ACTIVITY
