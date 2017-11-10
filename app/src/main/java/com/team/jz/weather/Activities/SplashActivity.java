@@ -34,6 +34,7 @@ import com.team.jz.weather.Weather.Utilities;
 import com.team.jz.weather.Weather.WeatherReading;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
         LocationListener {
 
     private static final String DEFAULT_SEARCH_CITY = "firstSearched";
-    private WeatherReading fetchedWeatherReading;
+    private ArrayList<WeatherReading> fetchedWeatherReadings;
     private boolean FIRST_TIME_LAUNCH;
     private String SHARED_PREFS = "sharedPrefs";
     private String FIRST_LAUNCH_KEY = "firstLaunch";
@@ -87,8 +88,8 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
 
     //THIS METHOD IS CALLED AUTOMATICALLY WHEN THE WEATHER API HAS FINISHED RETURNING THE WEATHER DETAILS
     @Override
-    public void finishedDownloading(WeatherReading weatherReading) {
-        fetchedWeatherReading = weatherReading;
+    public void finishedDownloading(ArrayList<WeatherReading> weatherReadings) {
+        fetchedWeatherReadings = weatherReadings;
         //GO TO MAIN ACTIVITY
         handler.postDelayed(goToMainActivityRunnable, 1500);
         fetchDataTask = null;
@@ -100,9 +101,9 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
         @Override
         public void run() {
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-            intent.putExtra(WEATHER_READING_KEY, fetchedWeatherReading);
+            intent.putExtra(WEATHER_READING_KEY, fetchedWeatherReadings);
             startActivity(intent);
-            Log.d(fetchedWeatherReading.toString(), "run: ");
+            Log.d(fetchedWeatherReadings.toString(), "run: ");
             SplashActivity.this.finish();
         }
     };
@@ -156,13 +157,16 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                     return;
                 } else {
                     Log.d(list.get(0).getCountryName() + "", "FETCHING DATA: ");
-                    fetchDataTask.execute(Utilities.TODAY_WEATHER, list.get(0).getLocality(), lat + "", lon + "");
+                    fetchDataTask.execute(Utilities.FORECAST_WEATHER, list.get(0).getLocality(), lat + "", lon + "");
                 }
+            }
+            else{
+                showExplanationDialogue("Sadly we couldnt locate you, but you can search manually as well");
             }
         } catch (SecurityException locationError) {
             locationError.printStackTrace();
             Log.d("LOCATION SECURITY ERROR", "ERROR: ");
-            showExplanationDialogue();
+            showExplanationDialogue("An error occured, but you can also search manually!!");
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("ERROR GETTING ADDRESS", "ERROR: ");
@@ -187,7 +191,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                     }
                 } else {
                     Log.d("REFUSED", "onRequestPermissionsResult: ");
-                    showExplanationDialogue();
+                    showExplanationDialogue("We need to access device location to get weather data but you can also search manually!!");
                 }
         }
     }
@@ -208,9 +212,9 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
         Log.d("+++++++++++++++++++" + location.toString(), "LOCATION CHANGED: ");
     }
 
-    private void showExplanationDialogue(){
+    private void showExplanationDialogue(String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
-        builder.setMessage("We need to access device location to get weather data but you can also search manually!!");
+        builder.setMessage(message);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -251,7 +255,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                     public void onClick(View view) {
                         String c = editText.getText().toString();
                         if (c.length() > 0) {
-                            fetchDataTask.execute(Utilities.TODAY_WEATHER, c);
+                            fetchDataTask.execute(Utilities.FORECAST_WEATHER, c);
                             //SAVE THE FIRST SEARCHED CITY IN SHARED PREFERENCES
                             sharedPreferences.edit().putString(DEFAULT_SEARCH_CITY, c).apply();
                             searchDialog.dismiss();

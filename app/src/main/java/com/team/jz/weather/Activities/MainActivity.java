@@ -18,6 +18,8 @@ import com.team.jz.weather.R;
 import com.team.jz.weather.Weather.Utilities;
 import com.team.jz.weather.Weather.WeatherReading;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements DownloadCallback {
 // THIS IS THE MAIN ACTIVITY TO DISPLAY THE WEATHER DATA
 
@@ -25,10 +27,8 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
     private int CURRENT_FRAGMENT = 0;
     //0 - WEATHER DETAIL FRAGMENT
     //1 - CITIES LIST FRAGMENT
+    ArrayList<WeatherReading> weatherReadings;
 
-    private String city;
-    private double latitude;
-    private String longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,22 +36,16 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         setContentView(R.layout.activity_main);
 
         //GET WEATHER READING OBJECT FROM SPLASH INTENT
-
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_menu);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-
-        WeatherReading reading  = (WeatherReading) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
-
-        city = reading.getCity();
+        weatherReadings = (ArrayList<WeatherReading>) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
 
         WeatherDetailFragment weatherDetailFragment = new WeatherDetailFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.parent_layout,weatherDetailFragment);
         transaction.commit();
-
-
     }
 
 
@@ -83,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
     private void refreshData() {
         FetchDataTask fetchDataTask = new FetchDataTask(getApplicationContext(),this);
-        fetchDataTask.execute(Utilities.FORECAST_WEATHER,city);
+        fetchDataTask.execute(Utilities.FORECAST_WEATHER);
 
     }
 
@@ -95,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
     }
 
     @Override
-    public void finishedDownloading(WeatherReading weatherReading) {
-
+    public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
+        weatherReadings = weatherReading;
     }
 
 

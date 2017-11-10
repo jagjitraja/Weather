@@ -22,8 +22,12 @@ public class Utilities {
     public final static String ZIP_CODE_PARAMETER = "zip";
     public final static String TODAY_WEATHER = "TODAY";
     public final static String FORECAST_WEATHER = "FORECAST";
+    public final static String CNT_VAL = "7";
 
 
+    public final static String COORD = "coord";
+    public final static String LIST = "list";
+    public final static String COUNT = "cnt";
     public final static String MAIN = "main";
     public final static String WEATHER = "weather";
     public final static String WIND = "wind";
@@ -37,6 +41,7 @@ public class Utilities {
     public final static String DEG = "deg";
     public final static String COUNTRY = "country";
     public final static String CITY_NAME = "name";
+    public final static String CITY_JSON_PARAMETER = "city";
     public final static String WEATHER_TYPE = "main";
     public final static String DESCRIPTION = "description";
 

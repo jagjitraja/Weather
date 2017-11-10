@@ -18,12 +18,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by T00533766 on 10/19/2017.
  */
 
-public class FetchDataTask extends AsyncTask<String, Integer, WeatherReading> {
+public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherReading>> {
 
     private final String TAG = "FETCH DATA TASK";
     private Context context;
@@ -35,38 +36,62 @@ public class FetchDataTask extends AsyncTask<String, Integer, WeatherReading> {
     }
 //TODO: CHECK NETWORK STATE BEFORE EXECUTING
     @Override
-    protected WeatherReading doInBackground(String... strings) {
+    protected ArrayList<WeatherReading> doInBackground(String... strings) {
 
         //strings[0] = TODAY OR FORECAST
         //strings[1] = CITY OR ZIP
-        WeatherReading weatherReading = null;
+        ArrayList<WeatherReading> weatherReadings = null;
         if (strings.length<4){
             return null;
         }
+        Uri todayUri = null;
 
-            if (strings[0].equals(Utilities.TODAY_WEATHER)){
-                try {
-                    Uri todayUri;
-                    if(strings.length>2) {
-                        //IF LATITUDE AND LONGITUDE ARE AVAILABLE, USE TEHM TO BUUILD THE URI
-                        todayUri = Uri.parse(Utilities.CURRENT_WEATHER_BASE_URL).buildUpon().
-                                appendQueryParameter(Utilities.LATITUDE_PARAMETER, strings[2]).
-                                appendQueryParameter(Utilities.LONGITUDE_PARAMETER, strings[3]).
-                                appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
-                                appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
-                                appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).build();
-                    }
-                    else{
-                        //IF LATITUDE AND LONGITUDE ARE NOT AVAOLABLE, USE CITY NAME TO BUILD URI
-                        todayUri = Uri.parse(Utilities.CURRENT_WEATHER_BASE_URL).buildUpon().
-                                appendQueryParameter(Utilities.CITY_PARAMETER, strings[1]).
-                                appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
-                                appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
-                                appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).build();
-                    }
+            if (strings[0].equals(Utilities.TODAY_WEATHER)) {
+
+                if (strings.length > 2) {
+                    //IF LATITUDE AND LONGITUDE ARE AVAILABLE, USE TEHM TO BUUILD THE URI
+                    todayUri = Uri.parse(Utilities.CURRENT_WEATHER_BASE_URL).buildUpon().
+                            appendQueryParameter(Utilities.LATITUDE_PARAMETER, strings[2]).
+                            appendQueryParameter(Utilities.LONGITUDE_PARAMETER, strings[3]).
+                            appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
+                            appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
+                            appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).build();
+                } else {
+                    //IF LATITUDE AND LONGITUDE ARE NOT AVAOLABLE, USE CITY NAME TO BUILD URI
+                    todayUri = Uri.parse(Utilities.CURRENT_WEATHER_BASE_URL).buildUpon().
+                            appendQueryParameter(Utilities.CITY_PARAMETER, strings[1]).
+                            appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
+                            appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
+                            appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).build();
+                }
+            }else if(strings[0].equals(Utilities.FORECAST_WEATHER)){
+
+                if (strings.length > 2) {
+                    //IF LATITUDE AND LONGITUDE ARE AVAILABLE, USE TEHM TO BUUILD THE URI
+                    todayUri = Uri.parse(Utilities.FORERCAST_WEATHER_BASE_URL).buildUpon().
+                            appendQueryParameter(Utilities.LATITUDE_PARAMETER, strings[2]).
+                            appendQueryParameter(Utilities.LONGITUDE_PARAMETER, strings[3]).
+                            appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
+                            appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
+                            appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).
+                            appendQueryParameter(Utilities.COUNT,Utilities.CNT_VAL).build();
+                } else {
+                    //IF LATITUDE AND LONGITUDE ARE NOT AVAOLABLE, USE CITY NAME TO BUILD URI
+                    todayUri = Uri.parse(Utilities.FORERCAST_WEATHER_BASE_URL).buildUpon().
+                            appendQueryParameter(Utilities.CITY_PARAMETER, strings[1]).
+                            appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
+                            appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
+                            appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).
+                            appendQueryParameter(Utilities.COUNT,Utilities.CNT_VAL).build();
+                }
+            }
+
+            if(todayUri==null){
+                return null;
+            }
+                try{
 
                     URL url = new URL(todayUri.toString());
-
 
                     Log.d(TAG, "doInBackground: "+ url.toString());
                     HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
@@ -86,7 +111,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, WeatherReading> {
                         }
                         //THIS PARSES THE INPUT STREAM INTO JSON AND UPDATES THE VARIABLES
                         WeatherJsonParser parser = new WeatherJsonParser(file);
-                        weatherReading = parser.parseCurrentWeather();
+                        weatherReadings = parser.parseCurrentWeather(strings[0]);
 
                     }
                     else if (RESPONSE_CODE>=400 && RESPONSE_CODE<=500){
@@ -105,15 +130,15 @@ public class FetchDataTask extends AsyncTask<String, Integer, WeatherReading> {
                 } catch (JSONException | IOException e) {
                     e.printStackTrace();
                 }
-            }
-        return weatherReading;
+
+        return weatherReadings;
     }
 
 
     @Override
-    protected void onPostExecute(WeatherReading weatherReading) {
-        super.onPostExecute(weatherReading);
-        callback.finishedDownloading(weatherReading);
+    protected void onPostExecute(ArrayList<WeatherReading> weatherReadings) {
+        super.onPostExecute(weatherReadings);
+        callback.finishedDownloading(weatherReadings);
     }
 
     @Override

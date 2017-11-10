@@ -13,21 +13,21 @@ import java.util.Date;
 
 public class WeatherReading implements Serializable {
 
+
+
     public String getCity() {
         return city;
     }
-
     public void setCity(String city) {
         this.city = city;
     }
-
     public String getCountry() {
         return country;
     }
-
     public void setCountry(String country) {
         this.country = country;
     }
+
 
     public enum WeatherType {RAIN,SNOW,CLOUDS,CLEAR,SUNNY,THUNDERSTORM}
 
@@ -40,6 +40,8 @@ public class WeatherReading implements Serializable {
     private double lowTemp;
     private double highTemp;
     private double temp;
+    private double latitude;
+    private double longitude;
 
     private double humidity;
     private double pressure;
@@ -74,6 +76,37 @@ public class WeatherReading implements Serializable {
         this.humidity = humidity;
         this.wind_speed = wind_speed;
         this.wind_direction = wind_direction;
+    }
+
+    public WeatherReading(double temp,
+                          double min_temperature,
+                          double max_temperature,
+                          WeatherType weather_type,
+                          long dateinMillis,
+                          String weatherDescription,
+                          String city,
+                          double humidity,
+                          double pressure,
+                          double wind_speed,
+                          double wind_direction,
+                          String country,
+                          double latitude,
+                          double longitude){
+
+        this.temp = temp;
+        this.lowTemp = min_temperature;
+        this.highTemp = max_temperature;
+        this.weatherType = weather_type;
+        this.weatherDescription = weatherDescription;
+        this.dateinMillis = dateinMillis;
+        this.city =city;
+        this.country = country;
+        this.pressure = pressure;
+        this.humidity = humidity;
+        this.wind_speed = wind_speed;
+        this.wind_direction = wind_direction;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public double getTemp() {
@@ -165,7 +198,9 @@ public class WeatherReading implements Serializable {
                 "max temp: "+getMax_temperature()+"\n"+
                 "description: "+weatherDescription+"\n"+
                 "city: "+city+"\n"+
-                "country "+country+"\n";
+                "country "+country+"\n"+
+                "latitude "+latitude+"\n"+
+                "longitude "+longitude+"\n";
     }
 
     public int getWeatherIcon(){
@@ -229,6 +264,23 @@ public class WeatherReading implements Serializable {
                 break;
         }
         return weather;
+    }
+
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
 }
