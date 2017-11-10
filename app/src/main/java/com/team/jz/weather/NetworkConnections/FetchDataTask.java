@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.team.jz.weather.R;
 import com.team.jz.weather.Weather.Utilities;
 import com.team.jz.weather.Weather.WeatherJsonParser;
 import com.team.jz.weather.Weather.WeatherReading;
@@ -115,15 +116,15 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
 
                     }
                     else if (RESPONSE_CODE>=400 && RESPONSE_CODE<=500){
-                        Toast.makeText(context,"WE RUN INTO A PROBLEM",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.returned_error,Toast.LENGTH_SHORT).show();
                         Log.d("WE RUN INTO A PROBLEM "+ RESPONSE_CODE, "doInBackground: ");
 
                     }else if (RESPONSE_CODE>=500){
-                        Toast.makeText(context,"SERVERS ARE DOWN",Toast.LENGTH_SHORT).show();;
+                        Toast.makeText(context, R.string.server_error,Toast.LENGTH_SHORT).show();;
                         Log.d("SERVER ERRORS"+ RESPONSE_CODE, "doInBackground: ");;
                     }
                     else{
-                        Toast.makeText(context,"NOT SURE WHAT HAPPENED",Toast.LENGTH_SHORT).show();;
+                        Toast.makeText(context, R.string.unkown_error,Toast.LENGTH_SHORT).show();;
                         Log.d("UNKNOWN ERRORS"+ RESPONSE_CODE, "doInBackground: ");;
                     }
 

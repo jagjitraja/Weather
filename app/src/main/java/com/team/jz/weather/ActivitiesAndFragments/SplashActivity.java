@@ -1,4 +1,4 @@
-package com.team.jz.weather.Activities;
+package com.team.jz.weather.ActivitiesAndFragments;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -161,12 +161,12 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                 }
             }
             else{
-                showExplanationDialogue("Sadly we couldnt locate you, but you can search manually as well");
+                showExplanationDialogue(getString(R.string.no_location_found_error));
             }
         } catch (SecurityException locationError) {
             locationError.printStackTrace();
             Log.d("LOCATION SECURITY ERROR", "ERROR: ");
-            showExplanationDialogue("An error occured, but you can also search manually!!");
+            showExplanationDialogue(getString(R.string.location_security_error));
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("ERROR GETTING ADDRESS", "ERROR: ");
@@ -191,7 +191,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                     }
                 } else {
                     Log.d("REFUSED", "onRequestPermissionsResult: ");
-                    showExplanationDialogue("We need to access device location to get weather data but you can also search manually!!");
+                    showExplanationDialogue(getString(R.string.location_denied_error));
                 }
         }
     }
@@ -215,7 +215,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
     private void showExplanationDialogue(String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
         builder.setMessage(message);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -261,8 +261,8 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                             searchDialog.dismiss();
                         } else {
                             AlertDialog.Builder errorBuilder = new AlertDialog.Builder(SplashActivity.this);
-                            errorBuilder.setTitle("Please type in a search criteria");
-                            errorBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            errorBuilder.setTitle(R.string.search_prompt_text);
+                            errorBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     dialogInterface.dismiss();

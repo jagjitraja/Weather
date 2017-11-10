@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/black_overlay"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.team.jz.weather.Activities.WeatherDetailFragment">
+    tools:context="com.team.jz.weather.ActivitiesAndFragments.WeatherDetailFragment">
 
     <TextView
         android:id="@+id/city_name"
