@@ -22,7 +22,7 @@ public class Utilities {
     public final static String ZIP_CODE_PARAMETER = "zip";
     public final static String TODAY_WEATHER = "TODAY";
     public final static String FORECAST_WEATHER = "FORECAST";
-    public final static String CNT_VAL = "7";
+    public final static String CNT_VAL = "8";
 
 
     public final static String COORD = "coord";

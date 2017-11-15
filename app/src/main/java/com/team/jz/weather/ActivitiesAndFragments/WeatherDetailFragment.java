@@ -2,10 +2,12 @@ package com.team.jz.weather.ActivitiesAndFragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.team.jz.weather.R;
@@ -45,7 +47,10 @@ public class WeatherDetailFragment extends Fragment {
         TextView pressure = (TextView) weatherDetailView.findViewById(R.id.pressure_val);
         TextView wind_speed = (TextView) weatherDetailView.findViewById(R.id.wind_val);
 
-        System.out.println(weatherReadings.get(0).toString()+"=-==========");
+        ListView list = weatherDetailView.findViewById(R.id.forecast_list);
+        list.setAdapter(new WeatherReadingForecastAdapter(getContext(),R.layout.forecast_weather_reading_item,
+                weatherReadings));
+
         weatherIcon.setBackgroundResource(weatherReadings.get(0).getWeatherIcon());
         city.setText(weatherReadings.get(0).getCity());
         temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+" C");
@@ -55,7 +60,10 @@ public class WeatherDetailFragment extends Fragment {
         humidity.setText(weatherReadings.get(0).getHumidity()+" %");
         pressure.setText(weatherReadings.get(0).getPressure()+" hpa");
         wind_speed.setText(weatherReadings.get(0).getWind_speed()+"m/s\n"+weatherReadings.get(0).getWind_direction()+"deg");
+
         return weatherDetailView;
     }
 
+
 }
+
