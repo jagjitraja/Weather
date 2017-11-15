@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
                     //TODO: THIS IS REFRESH BUTTON TO REFRESH THE CURRENT CITY DATA
                     if(CURRENT_FRAGMENT!=0)
                         replaceFragment(new WeatherDetailFragment());
-
                     refreshData();
                     return true;
                 case R.id.settings_tab:

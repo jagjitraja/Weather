@@ -3,12 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/forecast_list"
-    android:name="com.team.jz.weather.ActivitiesAndFragments.WeatherReadingForecastListFragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbars="vertical"
     android:smoothScrollbar="true"
+    android:layout_weight="1"
     android:overScrollMode="always"
     android:background="@color/colorAccent"
-    tools:context="com.team.jz.weather.ActivitiesAndFragments.WeatherReadingForecastListFragment"
     tools:listitem="@layout/forecast_weather_reading_item" />
