@@ -150,7 +150,6 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                 Geocoder geoCoder = new Geocoder(SplashActivity.this);
                 Log.d(" " + lat + " " + lon, "onConnected: ");
                 List<Address> list = geoCoder.getFromLocation(lat, lon, 10);
-
                 if (list.size() == 0) {
                     Toast.makeText(getApplicationContext(), R.string.error_location_not_found, Toast.LENGTH_SHORT).show();
                     showSearchDialogue();
