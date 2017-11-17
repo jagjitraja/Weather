@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         WeatherDetailFragment weatherDetailFragment = new WeatherDetailFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.parent_layout,weatherDetailFragment);
-        transaction.commit();
+
+        transaction.commit();    transaction.add(R.id.parent_layout,weatherDetailFragment);
     }
 
 

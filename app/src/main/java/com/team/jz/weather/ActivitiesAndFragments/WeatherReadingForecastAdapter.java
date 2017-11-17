@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.team.jz.weather.R;
@@ -36,6 +37,7 @@ public class WeatherReadingForecastAdapter extends ArrayAdapter<WeatherReading> 
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.forecast_weather_reading_item,parent,false);
             weatherItemHolder.day = convertView.findViewById(R.id.day);
             weatherItemHolder.temp = convertView.findViewById(R.id.temp);
+            weatherItemHolder.forecast_image = convertView.findViewById(R.id.forecast_image);
             convertView.setTag(weatherItemHolder);
         }else{
             weatherItemHolder = (ViewHolder) convertView.getTag();
@@ -43,6 +45,7 @@ public class WeatherReadingForecastAdapter extends ArrayAdapter<WeatherReading> 
 
         weatherItemHolder.temp.setText(weatherReadings.get(position).getTemp() + " " + getContext().getString(R.string.super_script));
         weatherItemHolder.day.setText(weatherReadings.get(position).getDate());
+        weatherItemHolder.forecast_image.setBackgroundResource(weatherReadings.get(position).getWeatherIcon());
 
         return convertView;
     }
@@ -54,7 +57,7 @@ public class WeatherReadingForecastAdapter extends ArrayAdapter<WeatherReading> 
     public class ViewHolder {
         public TextView day;
         public TextView temp;
-
+        public ImageView forecast_image;
         public ViewHolder() {
         }
     }
