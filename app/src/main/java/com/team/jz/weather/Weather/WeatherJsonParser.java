@@ -64,13 +64,15 @@ public class WeatherJsonParser {
             String country = coordObject.optString(Utilities.COUNTRY);
             String city = coordObject.optString(Utilities.CITY_NAME);
 
-            for(int i = 0;i<daysWeatherList.length();i++){
+            for(int i = 0;i<daysWeatherList.length();i+=8){
+
                 JSONObject dayObject = (JSONObject) daysWeatherList.get(i);
                 JSONArray weatherObject = dayObject.optJSONArray(Utilities.WEATHER);
                 JSONObject mainObject = dayObject.optJSONObject(Utilities.MAIN);
                 JSONObject windObject = dayObject.optJSONObject(Utilities.WIND);
                 JSONObject sysObject = dayObject.optJSONObject(Utilities.SYS);
 
+                long date = dayObject.optLong(Utilities.DATE);
                 double wind_speed = windObject.optDouble(Utilities.SPEED);
                 double wind_direction = windObject.optDouble(Utilities.DEG);
                 double temperature = mainObject.optDouble(Utilities.TEMP);
@@ -82,9 +84,13 @@ public class WeatherJsonParser {
                 String weather_description = weatherObject.optJSONObject(0).optString(Utilities.DESCRIPTION);
                 WeatherReading.WeatherType weatherType = WeatherReading.getWeatherType(weather_type);
 
+//TODO: FIRST VALUE IN THE LIST IS INCORRECT
+
                 WeatherReading reading = new WeatherReading(temperature, min_temp, max_temp, weatherType,
-                        System.currentTimeMillis(), weather_description,
-                        city, humidity, pressure, wind_speed, wind_direction, country);
+                        date, weather_description,
+                        city, humidity,
+                        pressure, wind_speed,
+                        wind_direction, country);
                 reading.setLatitude(latitude);
                 reading.setLongitude(longitude);
                 weatherReadings.add(reading);

@@ -41,7 +41,7 @@ public class WeatherReadingForecastAdapter extends ArrayAdapter<WeatherReading> 
             weatherItemHolder = (ViewHolder) convertView.getTag();
         }
 
-        weatherItemHolder.temp.setText(weatherReadings.get(position).getTemp()+" "+getContext().getString(R.string.super_script));
+        weatherItemHolder.temp.setText(weatherReadings.get(position).getTemp() + " " + getContext().getString(R.string.super_script));
         weatherItemHolder.day.setText(weatherReadings.get(position).getDate());
 
         return convertView;

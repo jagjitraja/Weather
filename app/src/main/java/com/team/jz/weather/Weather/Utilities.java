@@ -11,6 +11,7 @@ public class Utilities {
     public final static String OPEN_WEATHER_API_KEY = BuildConfig.OPEN_WEATHER_API;
     public final static String CURRENT_WEATHER_BASE_URL ="http://api.openweathermap.org/data/2.5/weather?";
     public final static String FORERCAST_WEATHER_BASE_URL ="http://api.openweathermap.org/data/2.5/forecast?";
+
     public final static String CITY_PARAMETER = "q";
     public final static String LATITUDE_PARAMETER = "lat";
     public final static String LONGITUDE_PARAMETER = "lon";
@@ -22,9 +23,10 @@ public class Utilities {
     public final static String ZIP_CODE_PARAMETER = "zip";
     public final static String TODAY_WEATHER = "TODAY";
     public final static String FORECAST_WEATHER = "FORECAST";
-    public final static String CNT_VAL = "8";
+    public final static String CNT_VAL = "39";
 
 
+    public final static String DATE = "dt";
     public final static String COORD = "coord";
     public final static String LIST = "list";
     public final static String COUNT = "cnt";
