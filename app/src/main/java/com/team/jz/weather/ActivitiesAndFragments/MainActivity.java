@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.team.jz.weather.NetworkConnections.DownloadCallback;
@@ -21,7 +22,11 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 // THIS IS THE MAIN ACTIVITY TO DISPLAY THE WEATHER DATA
 
 
-    private int CURRENT_FRAGMENT = 0;
+    private int CURRENT_FRAGMENT;
+    private String CURRENT_FRAG_KEY = "currentFrag";
+    private String WEATHER_FRAG_TAG = "weatherDetailFragment";
+    private String CITIES_FRAG_TAG = "citiesFragment";
+
     //0 - WEATHER DETAIL FRAGMENT
     //1 - CITIES LIST FRAGMENT
     ArrayList<WeatherReading> weatherReadings;
@@ -38,32 +43,85 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
         weatherReadings = (ArrayList<WeatherReading>) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
 
-        WeatherDetailFragment weatherDetailFragment = new WeatherDetailFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
+<<<<<<< HEAD
         transaction.commit();    transaction.add(R.id.parent_layout,weatherDetailFragment);
+=======
+        //TODO: SET BOTTOM NAV ACTIVE ON CREATE WITH SAVED CITIES
+        if(savedInstanceState!=null) {
+            CURRENT_FRAGMENT = savedInstanceState.getInt(CURRENT_FRAG_KEY);
+        }
+        else{
+            CURRENT_FRAGMENT = 0;
+        }
+        Log.d("--------------"+CURRENT_FRAGMENT, "onCreate: ");
+        if(CURRENT_FRAGMENT == 0) {
+            WeatherDetailFragment weatherDetailFragment;
+            weatherDetailFragment = (WeatherDetailFragment) fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG);
+
+            if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG) != null) {
+                if (weatherDetailFragment.isAdded()) {
+                    Log.d("555555555555555555555", "onCreate: ");
+                    return;
+                }
+            } else {
+                weatherDetailFragment = new WeatherDetailFragment();
+            }
+            transaction.add(R.id.parent_layout, weatherDetailFragment, WEATHER_FRAG_TAG);
+            CURRENT_FRAGMENT = 0;
+
+        }else {
+            SavedCitiesListFragment savedCitiesListFragment;
+            savedCitiesListFragment = (SavedCitiesListFragment) fragmentManager.findFragmentByTag(CITIES_FRAG_TAG);
+            if (fragmentManager.findFragmentByTag(CITIES_FRAG_TAG) != null) {
+                if (savedCitiesListFragment.isAdded()) {
+                    Log.d(";;;;;;;;;;;;;;;;;;;", "onCreate: ");
+                    return;
+                }
+            } else {
+                savedCitiesListFragment = new SavedCitiesListFragment();
+            }
+            transaction.add(R.id.parent_layout, savedCitiesListFragment, WEATHER_FRAG_TAG);
+            CURRENT_FRAGMENT = 1;
+        }
+
+        transaction.commit();
+>>>>>>> jagjitraja/master
     }
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
+            FragmentManager fragmentManager = getSupportFragmentManager();
             switch (item.getItemId()){
                 case R.id.details_tab:
-                    //TODO: THIS IS REFRESH BUTTON TO REFRESH THE CURRENT CITY DATA
-                    if(CURRENT_FRAGMENT!=0)
-                        replaceFragment(new WeatherDetailFragment());
-                    refreshData();
+                    WeatherDetailFragment weatherDetailFragment = (WeatherDetailFragment) fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG);
+                    if(weatherDetailFragment!=null) {
+                        if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG).isAdded()) {
+                            return true;
+                        }
+                    }else {
+                        replaceFragment(new WeatherDetailFragment(),WEATHER_FRAG_TAG,fragmentManager);
+                    }
+
+                    CURRENT_FRAGMENT = 0;
                     return true;
                 case R.id.settings_tab:
-                    //TODO: GO TO SETTINGS FRAGMENT
                     return true;
-                case R.id.saved_cities_tab:
-                    if(CURRENT_FRAGMENT!=1)
 
-                   //TODO: GO TO CITIES LIST FRAGMENT
+                case R.id.saved_cities_tab:
+                    SavedCitiesListFragment savedCitiesListFragment = (SavedCitiesListFragment) fragmentManager.findFragmentByTag(CITIES_FRAG_TAG);
+                    if(savedCitiesListFragment!=null) {
+                        if (fragmentManager.findFragmentByTag(CITIES_FRAG_TAG).isAdded()) {
+                            return true;
+                        }
+                    }else {
+                        replaceFragment(new SavedCitiesListFragment(),CITIES_FRAG_TAG,fragmentManager);
+                    }
+                    CURRENT_FRAGMENT = 1;
                     return true;
                 default:
                     return false;
@@ -74,13 +132,17 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
     private void refreshData() {
         FetchDataTask fetchDataTask = new FetchDataTask(getApplicationContext(),this);
         fetchDataTask.execute(Utilities.FORECAST_WEATHER);
-
     }
 
-    private void replaceFragment(Fragment fragment){
-        FragmentManager fragmentManager = getSupportFragmentManager();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_FRAG_KEY,CURRENT_FRAGMENT);
+    }
+
+    private void replaceFragment(Fragment fragment, String TAG, FragmentManager fragmentManager){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.parent_layout,fragment);
+        transaction.replace(R.id.parent_layout,fragment,TAG);
         transaction.commit();
     }
 
