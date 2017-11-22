@@ -120,7 +120,9 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
     //MAINLY DOES GETTING DEVICE LOCATION FROM GOOGLE API
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d("Connected here", "....>>>>>>><<<<<<>>>>>>>>>.......");
         getLocationData();
+
     }
 
     private void getLocationData() {
@@ -139,6 +141,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                 } else {
                     ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                             REQUEST_LOCATION_RESPONSE);
+                    Log.d("RequesResponse", " Location Response.......");
                 }
             }
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, SplashActivity.this);
@@ -185,8 +188,10 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                     Log.d("GRANTED", "onRequestPermissionsResult: ");
                     if(googleApiClient.isConnected()) {
                         getLocationData();
+                        Log.d("Google Connected", "Connected");
                     }else{
                         googleApiClient.connect();
+                        Log.d("Google Connected", "Connected...........");
                     }
                 } else {
                     Log.d("REFUSED", "onRequestPermissionsResult: ");

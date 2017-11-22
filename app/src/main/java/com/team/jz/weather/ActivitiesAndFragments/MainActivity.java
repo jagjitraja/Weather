@@ -46,9 +46,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-<<<<<<< HEAD
-        transaction.commit();    transaction.add(R.id.parent_layout,weatherDetailFragment);
-=======
+        //transaction.commit();    transaction.add(R.id.parent_layout,weatherDetailFragment);
         //TODO: SET BOTTOM NAV ACTIVE ON CREATE WITH SAVED CITIES
         if(savedInstanceState!=null) {
             CURRENT_FRAGMENT = savedInstanceState.getInt(CURRENT_FRAG_KEY);
@@ -88,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         }
 
         transaction.commit();
->>>>>>> jagjitraja/master
     }
 
 
