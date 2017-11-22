@@ -49,7 +49,7 @@ public class WeatherReading implements Serializable {
     private double wind_direction;
 
     private DecimalFormat decimalFormat = new DecimalFormat(".##");
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM d");
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEEEE");
 
     public WeatherReading(double temp,
                           double min_temperature,
@@ -172,6 +172,7 @@ public class WeatherReading implements Serializable {
         String date = simpleDateFormat.format(new Date(dateinMillis*1000));
         return date;
     }
+
 
     public void setTemperature(double min, double max){
         this.lowTemp = min;
