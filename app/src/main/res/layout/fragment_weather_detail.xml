@@ -24,6 +24,6 @@
         android:background="@color/colorPrimaryDark"
         tools:listitem="@layout/forecast_weather_reading_item"
         android:layout_below="@+id/today_data"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"/>
 
 </RelativeLayout>
