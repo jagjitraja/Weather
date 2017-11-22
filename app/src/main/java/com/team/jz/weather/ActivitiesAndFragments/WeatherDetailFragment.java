@@ -57,7 +57,6 @@ public class WeatherDetailFragment extends Fragment {
         pressure.setText(weatherReadings.get(0).getPressure()+" hpa");
         wind_speed.setText(weatherReadings.get(0).getWind_speed()+"m/s\n"+weatherReadings.get(0).getWind_direction()+"deg");
 
-        Log.d(weatherReadings.get(0).getCity()+"aaaaaaaaaaaaa", "onCreateView: ");
 
         ListView list = weatherDetailView.findViewById(R.id.forecast_list);
         list.setAdapter(new WeatherReadingForecastAdapter(getContext(),R.layout.forecast_weather_reading_item,

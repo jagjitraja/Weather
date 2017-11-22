@@ -43,13 +43,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
         weatherReadings = (ArrayList<WeatherReading>) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
-        cities = new ArrayList<>();
-        cities.add("Kamloops");
-        cities.add("Kamloops");
-        cities.add("Kamloops");
-        cities.add("Kamloops");
-        cities.add("Kamloops");
-        cities.add("Kamloops");
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -88,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
                 }
             } else {
                 savedCitiesListFragment = new SavedCitiesListFragment();
-
             }
             transaction.add(R.id.fragment, savedCitiesListFragment, WEATHER_FRAG_TAG);
             CURRENT_FRAGMENT = 1;

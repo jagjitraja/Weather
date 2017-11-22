@@ -1,7 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black_overlay"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
@@ -21,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:overScrollMode="always"
-        android:background="@color/colorPrimaryDark"
         tools:listitem="@layout/forecast_weather_reading_item"
         android:layout_below="@+id/today_data"
         android:layout_alignParentStart="true"/>
