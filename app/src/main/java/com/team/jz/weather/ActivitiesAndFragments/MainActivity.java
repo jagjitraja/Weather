@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
             } else {
                 weatherDetailFragment = new WeatherDetailFragment();
             }
-            transaction.add(R.id.parent_layout, weatherDetailFragment, WEATHER_FRAG_TAG);
+            transaction.add(R.id.fragment, weatherDetailFragment, WEATHER_FRAG_TAG);
             CURRENT_FRAGMENT = 0;
 
         }else {
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
             } else {
                 savedCitiesListFragment = new SavedCitiesListFragment();
             }
-            transaction.add(R.id.parent_layout, savedCitiesListFragment, WEATHER_FRAG_TAG);
+            transaction.add(R.id.fragment, savedCitiesListFragment, WEATHER_FRAG_TAG);
             CURRENT_FRAGMENT = 1;
         }
 
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
     private void replaceFragment(Fragment fragment, String TAG, FragmentManager fragmentManager){
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.parent_layout,fragment,TAG);
+        transaction.replace(R.id.fragment,fragment,TAG);
         transaction.commit();
     }
 

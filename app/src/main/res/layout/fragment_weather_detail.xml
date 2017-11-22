@@ -13,15 +13,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--<include-->
-        <!--layout="@layout/fragment_forecast_weather_reading_list"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_width="match_parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/today_data"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--android:layout_below="@+id/today_data"-->
-        <!--android:layout_alignParentStart="true" />-->
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,10 +20,8 @@
         android:id="@+id/forecast_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        android:smoothScrollbar="true"
         android:overScrollMode="always"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimaryDark"
         tools:listitem="@layout/forecast_weather_reading_item"
         android:layout_below="@+id/today_data"
         android:layout_alignParentStart="true" />
