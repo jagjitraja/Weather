@@ -100,11 +100,17 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
     private Runnable goToMainActivityRunnable = new Runnable() {
         @Override
         public void run() {
-            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-            intent.putExtra(WEATHER_READING_KEY, fetchedWeatherReadings);
-            startActivity(intent);
-            Log.d(fetchedWeatherReadings.toString(), "run: ");
-            SplashActivity.this.finish();
+
+            if(fetchedWeatherReadings!=null) {
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                intent.putExtra(WEATHER_READING_KEY, fetchedWeatherReadings);
+                startActivity(intent);
+                Log.d(fetchedWeatherReadings.toString(), "run: ");
+                SplashActivity.this.finish();
+            }
+            else{
+                showExplanationDialogue("We run into an error, please retry!");
+            }
         }
     };
 
@@ -259,6 +265,9 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                     public void onClick(View view) {
                         String c = editText.getText().toString();
                         if (c.length() > 0) {
+                            if(fetchDataTask==null){
+                                fetchDataTask = new FetchDataTask(getApplicationContext(),SplashActivity.this);
+                            }
                             fetchDataTask.execute(Utilities.FORECAST_WEATHER, c);
                             //SAVE THE FIRST SEARCHED CITY IN SHARED PREFERENCES
                             sharedPreferences.edit().putString(DEFAULT_SEARCH_CITY, c).apply();
