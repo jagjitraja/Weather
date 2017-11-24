@@ -260,6 +260,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 Button searchButton = searchDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+
                 searchButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -268,6 +269,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                             if(fetchDataTask==null){
                                 fetchDataTask = new FetchDataTask(getApplicationContext(),SplashActivity.this);
                             }
+                            Log.d(fetchDataTask+"  "+c, "onClick: ");
                             fetchDataTask.execute(Utilities.FORECAST_WEATHER, c);
                             //SAVE THE FIRST SEARCHED CITY IN SHARED PREFERENCES
                             sharedPreferences.edit().putString(DEFAULT_SEARCH_CITY, c).apply();

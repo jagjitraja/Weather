@@ -42,11 +42,15 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
         //strings[0] = TODAY OR FORECAST
         //strings[1] = CITY OR ZIP
         ArrayList<WeatherReading> weatherReadings = null;
-        if (strings.length<4){
-            return null;
-        }
         Uri todayUri = null;
-
+        if (strings.length<4){
+            todayUri = Uri.parse(Utilities.FORERCAST_WEATHER_BASE_URL).buildUpon().
+                    appendQueryParameter(Utilities.CITY_PARAMETER, strings[1]).
+                    appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
+                    appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
+                    appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).build();
+        }
+        else {
             if (strings[0].equals(Utilities.TODAY_WEATHER)) {
 
                 if (strings.length > 2) {
@@ -65,7 +69,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
                             appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
                             appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).build();
                 }
-            }else if(strings[0].equals(Utilities.FORECAST_WEATHER)){
+            } else if (strings[0].equals(Utilities.FORECAST_WEATHER)) {
 
                 if (strings.length > 2) {
                     //IF LATITUDE AND LONGITUDE ARE AVAILABLE, USE TEHM TO BUUILD THE URI
@@ -75,7 +79,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
                             appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
                             appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
                             appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).
-                            appendQueryParameter(Utilities.COUNT,Utilities.CNT_VAL).build();
+                            appendQueryParameter(Utilities.COUNT, Utilities.CNT_VAL).build();
                 } else {
                     //IF LATITUDE AND LONGITUDE ARE NOT AVAOLABLE, USE CITY NAME TO BUILD URI
                     todayUri = Uri.parse(Utilities.FORERCAST_WEATHER_BASE_URL).buildUpon().
@@ -83,11 +87,13 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
                             appendQueryParameter(Utilities.FORMAT_PARAMETER, Utilities.FORMAT_VALUE).
                             appendQueryParameter(Utilities.UNITS_PARAMETER, Utilities.UNITS_VALUE).
                             appendQueryParameter(Utilities.API_PARAMETER, Utilities.OPEN_WEATHER_API_KEY).
-                            appendQueryParameter(Utilities.COUNT,Utilities.CNT_VAL).build();
+                            appendQueryParameter(Utilities.COUNT, Utilities.CNT_VAL).build();
                 }
             }
+        }
 
             if(todayUri==null){
+
                 return null;
             }
                 try{
@@ -132,6 +138,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
                     e.printStackTrace();
                 }
 
+        Log.d(weatherReadings.toString()+"   ", "doInBackground: ");
         return weatherReadings;
     }
 
