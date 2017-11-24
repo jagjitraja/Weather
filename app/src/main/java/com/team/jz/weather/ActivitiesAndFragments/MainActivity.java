@@ -2,6 +2,7 @@ package com.team.jz.weather.ActivitiesAndFragments;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 // THIS IS THE MAIN ACTIVITY TO DISPLAY THE WEATHER DATA
 
 
+    private final String WEATHER_ARRAY_LIST_KEY = "weatherArrayListKey";
     private int CURRENT_FRAGMENT;
     private String CURRENT_FRAG_KEY = "currentFrag";
     private String WEATHER_FRAG_TAG = "weatherDetailFragment";
@@ -48,12 +50,16 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        weatherReadings = (ArrayList<WeatherReading>) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
+        if(savedInstanceState!=null){
+            weatherReadings = (ArrayList<WeatherReading>) savedInstanceState.getSerializable(WEATHER_ARRAY_LIST_KEY);
+        }
+
         fetchDataTask = new FetchDataTask(getApplicationContext(),this);
         //GET WEATHER READING OBJECT FROM SPLASH INTENT
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_menu);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        weatherReadings = (ArrayList<WeatherReading>) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -73,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
             if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG) != null) {
                 if (weatherDetailFragment.isAdded()) {
+                    weatherDetailFragment.updateWeatherReadings(weatherReadings);
                     Log.d("555555555555555555555", "onCreate: ");
                     return;
                 }
@@ -150,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_FRAG_KEY,CURRENT_FRAGMENT);
+        outState.putSerializable(WEATHER_ARRAY_LIST_KEY,weatherReadings);
     }
 
     private void replaceFragment(Fragment fragment, String TAG, FragmentManager fragmentManager){

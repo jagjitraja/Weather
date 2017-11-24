@@ -1,6 +1,7 @@
 package com.team.jz.weather.ActivitiesAndFragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,7 +92,6 @@ public class WeatherDetailFragment extends Fragment {
                     weatherReadings.subList(1,weatherReadings.size())));
         }
     }
-
 
 }
 
