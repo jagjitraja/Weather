@@ -73,14 +73,12 @@ public class DialogueMethods {
                     public void onClick(View view) {
                         String c = editText.getText().toString();
                         if (c.length() > 0) {
-                            if(fetchDataTask==null){
-                                fetchDataTask = new FetchDataTask(context,callback);
-                            }
+                            fetchDataTask = new FetchDataTask(context,callback);
                             Log.d(fetchDataTask+"  "+c, "onClick: ");
                             fetchDataTask.execute(Utilities.FORECAST_WEATHER, c);
                             searchDialog.dismiss();
                         } else {
-                            AlertDialog.Builder errorBuilder = new AlertDialog.Builder(context);
+                            AlertDialog.Builder errorBuilder = new AlertDialog.Builder((AppCompatActivity)callback);
                             errorBuilder.setTitle(R.string.search_prompt_text);
                             errorBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override

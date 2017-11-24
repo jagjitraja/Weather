@@ -102,4 +102,5 @@
     <string name="unkown_error">NOT SURE WHAT HAPPENED</string>
     <string name="add_city">Add City</string>
     <string name="add">Add</string>
+    <string name="error_location">We couldn\'t find the location you are looking for, please try again</string>
 </resources>

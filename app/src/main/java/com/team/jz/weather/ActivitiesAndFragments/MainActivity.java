@@ -171,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         w.updateWeatherReadings(weatherReadings);
         transaction.replace(R.id.fragment,w,WEATHER_FRAG_TAG);
         transaction.commit();
-
     }
 
     @Override
@@ -179,11 +178,11 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
         if(weatherReading == null){
             DialogueMethods d = new DialogueMethods(getApplicationContext(),fetchDataTask);
-            d.showExplanationDialogue("We couldnt find the location you are looking for, please try again",this);
+            d.showExplanationDialogue(getString(R.string.error_location),this);
             return;
         }
-
         weatherReadings = weatherReading;
+        goToWeatherDataFragment();
     }
 
     //TODO: MAKE FRESH CALL WHEN USER TAPS ON UPDATE BUTTON OR ANOTHER GESTURE
