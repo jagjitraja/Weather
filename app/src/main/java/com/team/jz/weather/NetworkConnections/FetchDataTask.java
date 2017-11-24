@@ -43,6 +43,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
         //strings[1] = CITY OR ZIP
         ArrayList<WeatherReading> weatherReadings = null;
         Uri todayUri = null;
+
         if (strings.length<4){
             todayUri = Uri.parse(Utilities.FORERCAST_WEATHER_BASE_URL).buildUpon().
                     appendQueryParameter(Utilities.CITY_PARAMETER, strings[1]).
@@ -137,8 +138,6 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
                 } catch (JSONException | IOException e) {
                     e.printStackTrace();
                 }
-
-        Log.d(weatherReadings.toString()+"   ", "doInBackground: ");
         return weatherReadings;
     }
 

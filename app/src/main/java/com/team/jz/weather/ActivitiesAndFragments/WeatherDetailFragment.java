@@ -19,15 +19,22 @@ public class WeatherDetailFragment extends Fragment {
 
     private ArrayList<WeatherReading> weatherReadings;
 
+    private TextView city;
+    private TextView temp ;
+    private ImageView weatherIcon;
+    private TextView type ;
+    private TextView min_temp ;
+    private TextView max_temp;
+    private TextView humidity;
+    private TextView pressure ;
+    private TextView wind_speed;
+    private  ListView list;
     public WeatherDetailFragment(){
 
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        weatherReadings = (ArrayList<WeatherReading>) getActivity().getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
-
     }
 
     @Override
@@ -57,12 +64,17 @@ public class WeatherDetailFragment extends Fragment {
         pressure.setText(weatherReadings.get(0).getPressure()+" hpa");
         wind_speed.setText(weatherReadings.get(0).getWind_speed()+"m/s\n"+weatherReadings.get(0).getWind_direction()+"deg");
 
+        list = weatherDetailView.findViewById(R.id.forecast_list);
 
-        ListView list = weatherDetailView.findViewById(R.id.forecast_list);
         list.setAdapter(new WeatherReadingForecastAdapter(getContext(),R.layout.forecast_weather_reading_item,
                 weatherReadings.subList(1,weatherReadings.size())));
 
         return weatherDetailView;
+    }
+
+    public void updateWeatherReadings(ArrayList<WeatherReading> weatherReadings){
+        this.weatherReadings = weatherReadings;
+
     }
 
 

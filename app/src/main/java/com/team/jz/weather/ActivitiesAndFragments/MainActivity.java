@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
             } else {
                 weatherDetailFragment = new WeatherDetailFragment();
             }
+            weatherDetailFragment.updateWeatherReadings(weatherReadings);
             transaction.add(R.id.fragment, weatherDetailFragment, WEATHER_FRAG_TAG);
             CURRENT_FRAGMENT = 0;
 
@@ -99,12 +100,14 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
                     WeatherDetailFragment weatherDetailFragment = (WeatherDetailFragment) fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG);
                     if(weatherDetailFragment!=null) {
                         if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG).isAdded()) {
+                            weatherDetailFragment.updateWeatherReadings(weatherReadings);
                             return true;
                         }
                     }else {
                         replaceFragment(new WeatherDetailFragment(),WEATHER_FRAG_TAG,fragmentManager);
                     }
 
+                    weatherDetailFragment.updateWeatherReadings(weatherReadings);
                     CURRENT_FRAGMENT = 0;
                     return true;
                 case R.id.settings_tab:
@@ -144,6 +147,17 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         transaction.commit();
     }
 
+    public void goToWeatherDataFragment(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        WeatherDetailFragment w = (WeatherDetailFragment) getSupportFragmentManager().findFragmentByTag(WEATHER_FRAG_TAG);
+        if (w ==null){
+            w = new WeatherDetailFragment();
+        }
+
+        w.updateWeatherReadings(weatherReadings);
+        transaction.replace(R.id.fragment,w,WEATHER_FRAG_TAG);
+        transaction.commit();
+    }
     @Override
     public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
         weatherReadings = weatherReading;

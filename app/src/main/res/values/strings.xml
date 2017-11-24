@@ -100,4 +100,6 @@
     <string name="returned_error">We run into a problem</string>
     <string name="server_error">SERVERS ARE DOWN</string>
     <string name="unkown_error">NOT SURE WHAT HAPPENED</string>
+    <string name="add_city">Add City</string>
+    <string name="add">Add</string>
 </resources>
