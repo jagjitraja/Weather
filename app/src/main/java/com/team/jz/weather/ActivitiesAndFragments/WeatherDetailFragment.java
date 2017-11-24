@@ -69,11 +69,27 @@ public class WeatherDetailFragment extends Fragment {
         list.setAdapter(new WeatherReadingForecastAdapter(getContext(),R.layout.forecast_weather_reading_item,
                 weatherReadings.subList(1,weatherReadings.size())));
 
+        Log.d("wwwwwwwwwwwwwww", "updateWeatherReadings: ");
         return weatherDetailView;
     }
 
     public void updateWeatherReadings(ArrayList<WeatherReading> weatherReadings){
+        Log.d("aaaaaaaaaaaaaaa", "updateWeatherReadings: ");
         this.weatherReadings = weatherReadings;
+        if(weatherIcon!=null){
+            weatherIcon.setBackgroundResource(weatherReadings.get(0).getWeatherIcon());
+            city.setText(weatherReadings.get(0).getCity());
+            temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+" C");
+            type.setText(weatherReadings.get(0).getWeatherType().toString());
+            min_temp.setText(weatherReadings.get(0).getMin_temperature()+getResources().getString(R.string.super_script)+" C");
+            max_temp.setText(weatherReadings.get(0).getMax_temperature()+getResources().getString(R.string.super_script)+" C");
+            humidity.setText(weatherReadings.get(0).getHumidity()+" %");
+            pressure.setText(weatherReadings.get(0).getPressure()+" hpa");
+            wind_speed.setText(weatherReadings.get(0).getWind_speed()+"m/s\n"+weatherReadings.get(0).getWind_direction()+"deg");
+
+            list.setAdapter(new WeatherReadingForecastAdapter(getContext(),R.layout.forecast_weather_reading_item,
+                    weatherReadings.subList(1,weatherReadings.size())));
+        }
     }
 
 

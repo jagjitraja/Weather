@@ -181,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
             d.showExplanationDialogue(getString(R.string.error_location),this);
             return;
         }
+        Log.d("aaaaaaaaaaaaaaaaa", "finishedDownloading: ");
         weatherReadings = weatherReading;
         goToWeatherDataFragment();
     }

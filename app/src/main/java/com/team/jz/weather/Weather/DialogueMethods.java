@@ -10,19 +10,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.team.jz.weather.ActivitiesAndFragments.MainActivity;
 import com.team.jz.weather.ActivitiesAndFragments.SplashActivity;
 import com.team.jz.weather.NetworkConnections.DownloadCallback;
 import com.team.jz.weather.NetworkConnections.FetchDataTask;
 import com.team.jz.weather.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by T00533766 on 11/23/2017.
  */
 
-public class DialogueMethods {
+public class DialogueMethods implements DownloadCallback {
 
     private Context context;
     private FetchDataTask fetchDataTask;
+    private DownloadCallback downloadCallback;
     public DialogueMethods(Context context,FetchDataTask fetchDataTask){
         this.context = context;
         this.fetchDataTask = fetchDataTask;
@@ -32,6 +36,7 @@ public class DialogueMethods {
         AlertDialog.Builder builder = new AlertDialog.Builder((AppCompatActivity)callback);
         builder.setMessage(message);
         builder.setCancelable(false);
+        this.downloadCallback = callback;
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -93,5 +98,13 @@ public class DialogueMethods {
             }
         });
         searchDialog.show();
+    }
+
+    @Override
+    public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
+
+        MainActivity activity = (MainActivity)downloadCallback;
+        activity.finishedDownloading(weatherReading);
+
     }
 }
