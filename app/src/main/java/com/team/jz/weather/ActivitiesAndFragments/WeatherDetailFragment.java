@@ -44,15 +44,15 @@ public class WeatherDetailFragment extends Fragment {
 
         View weatherDetailView = inflater.inflate(R.layout.fragment_weather_detail,container,false);
 
-        TextView city = (TextView) weatherDetailView.findViewById(R.id.city_name);
-        TextView temp = (TextView) weatherDetailView.findViewById(R.id.weather_temperature);
-        ImageView weatherIcon = (ImageView) weatherDetailView.findViewById(R.id.weather_icon);
-        TextView type = (TextView) weatherDetailView.findViewById(R.id.weather_type);
-        TextView min_temp = (TextView) weatherDetailView.findViewById(R.id.min_temp_val);
-        TextView max_temp = (TextView) weatherDetailView.findViewById(R.id.max_temp_val);
-        TextView humidity = (TextView) weatherDetailView.findViewById(R.id.humidity_val);
-        TextView pressure = (TextView) weatherDetailView.findViewById(R.id.pressure_val);
-        TextView wind_speed = (TextView) weatherDetailView.findViewById(R.id.wind_val);
+        city = (TextView) weatherDetailView.findViewById(R.id.city_name);
+        temp = (TextView) weatherDetailView.findViewById(R.id.weather_temperature);
+        weatherIcon = (ImageView) weatherDetailView.findViewById(R.id.weather_icon);
+        type = (TextView) weatherDetailView.findViewById(R.id.weather_type);
+        min_temp = (TextView) weatherDetailView.findViewById(R.id.min_temp_val);
+        max_temp = (TextView) weatherDetailView.findViewById(R.id.max_temp_val);
+        humidity = (TextView) weatherDetailView.findViewById(R.id.humidity_val);
+        pressure = (TextView) weatherDetailView.findViewById(R.id.pressure_val);
+        wind_speed = (TextView) weatherDetailView.findViewById(R.id.wind_val);
 
         weatherIcon.setBackgroundResource(weatherReadings.get(0).getWeatherIcon());
         city.setText(weatherReadings.get(0).getCity());
@@ -74,7 +74,6 @@ public class WeatherDetailFragment extends Fragment {
 
     public void updateWeatherReadings(ArrayList<WeatherReading> weatherReadings){
         this.weatherReadings = weatherReadings;
-
     }
 
 

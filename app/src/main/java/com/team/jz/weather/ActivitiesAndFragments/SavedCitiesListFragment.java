@@ -23,17 +23,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.team.jz.weather.NetworkConnections.DownloadCallback;
 import com.team.jz.weather.NetworkConnections.FetchDataTask;
 import com.team.jz.weather.R;
 import com.team.jz.weather.Weather.Utilities;
+import com.team.jz.weather.Weather.WeatherReading;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
-public class SavedCitiesListFragment extends Fragment {
-
+public class SavedCitiesListFragment extends Fragment implements DownloadCallback {
 
     private ArrayList<String> cities;
 
@@ -60,10 +62,8 @@ public class SavedCitiesListFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d(cities.get(i), "onItemClick: ");
 
-                MainActivity main = (MainActivity) getActivity();
-                FetchDataTask fetchDataTask = new FetchDataTask(getContext(),main);
+                FetchDataTask fetchDataTask = new FetchDataTask(getContext(),SavedCitiesListFragment.this);
                 fetchDataTask.execute(Utilities.FORECAST_WEATHER,cities.get(i));
-                main.goToWeatherDataFragment();
             }
         });
 
@@ -109,6 +109,13 @@ public class SavedCitiesListFragment extends Fragment {
         });
 
         return citiesListView;
+    }
+
+    @Override
+    public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
+        MainActivity main = (MainActivity) getActivity();
+        main.finishedDownloading(weatherReading);
+        main.goToWeatherDataFragment();
     }
 
     public class CitiesAdapter extends ArrayAdapter<String>{

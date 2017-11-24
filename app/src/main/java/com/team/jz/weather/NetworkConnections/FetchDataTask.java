@@ -30,6 +30,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
     private final String TAG = "FETCH DATA TASK";
     private Context context;
     private DownloadCallback callback;
+    private int RESPONSE_CODE;
 
     public FetchDataTask(Context c,DownloadCallback downloadCallback){
         context = c;
@@ -104,7 +105,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
                     Log.d(TAG, "doInBackground: "+ url.toString());
                     HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection();
 
-                    int RESPONSE_CODE = httpConnection.getResponseCode();
+                    RESPONSE_CODE = httpConnection.getResponseCode();
 
                     if (RESPONSE_CODE>=200 && RESPONSE_CODE<=300){
                         InputStream inputStream = httpConnection.getInputStream();
@@ -123,15 +124,11 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
 
                     }
                     else if (RESPONSE_CODE>=400 && RESPONSE_CODE<=500){
-                        Toast.makeText(context, R.string.returned_error,Toast.LENGTH_SHORT).show();
                         Log.d("WE RUN INTO A PROBLEM "+ RESPONSE_CODE, "doInBackground: ");
-
                     }else if (RESPONSE_CODE>=500){
-                        Toast.makeText(context, R.string.server_error,Toast.LENGTH_SHORT).show();;
                         Log.d("SERVER ERRORS"+ RESPONSE_CODE, "doInBackground: ");;
                     }
                     else{
-                        Toast.makeText(context, R.string.unkown_error,Toast.LENGTH_SHORT).show();;
                         Log.d("UNKNOWN ERRORS"+ RESPONSE_CODE, "doInBackground: ");;
                     }
 
@@ -146,11 +143,14 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
     protected void onPostExecute(ArrayList<WeatherReading> weatherReadings) {
         super.onPostExecute(weatherReadings);
         callback.finishedDownloading(weatherReadings);
-    }
-
-    @Override
-    protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
+//        if (RESPONSE_CODE>=400 && RESPONSE_CODE<=500){
+//            Toast.makeText(context, R.string.error_location_not_found,Toast.LENGTH_SHORT).show();
+//        }else if (RESPONSE_CODE>=500){
+//            Toast.makeText(context, R.string.server_error,Toast.LENGTH_SHORT).show();
+//        }
+//        else{
+//            Toast.makeText(context, R.string.unkown_error,Toast.LENGTH_SHORT).show();
+//        }
     }
 
     @Override
