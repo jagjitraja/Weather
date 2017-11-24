@@ -1,5 +1,6 @@
 package com.team.jz.weather.ActivitiesAndFragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -108,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
                     CURRENT_FRAGMENT = 0;
                     return true;
                 case R.id.settings_tab:
+                    Intent setting = new Intent(getApplicationContext() ,SettingsActivity.class);
+                    startActivity(setting);
                     return true;
 
                 case R.id.saved_cities_tab:
