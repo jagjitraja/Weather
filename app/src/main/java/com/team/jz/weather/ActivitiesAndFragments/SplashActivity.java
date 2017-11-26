@@ -30,6 +30,7 @@ import com.google.android.gms.location.LocationServices;
 import com.team.jz.weather.NetworkConnections.DownloadCallback;
 import com.team.jz.weather.NetworkConnections.FetchDataTask;
 import com.team.jz.weather.R;
+import com.team.jz.weather.Weather.DialogueMethods;
 import com.team.jz.weather.Weather.Utilities;
 import com.team.jz.weather.Weather.WeatherReading;
 
@@ -46,15 +47,11 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    private static final String DEFAULT_SEARCH_CITY = "firstSearched";
     private ArrayList<WeatherReading> fetchedWeatherReadings;
-    private boolean FIRST_TIME_LAUNCH;
-    private String SHARED_PREFS = "sharedPrefs";
-    private String FIRST_LAUNCH_KEY = "firstLaunch";
     public static final String WEATHER_READING_KEY = "weatherReading";
     private FetchDataTask fetchDataTask;
-    private SharedPreferences sharedPreferences;
     private Handler handler;
+    private DialogueMethods dialogueMethods;
 
     private GoogleApiClient googleApiClient;
     private final int REQUEST_LOCATION_RESPONSE = 0;
@@ -67,13 +64,10 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
 
         handler = new Handler();
         fetchDataTask = new FetchDataTask(getApplicationContext(), this);
+        dialogueMethods = new DialogueMethods(getApplicationContext(),fetchDataTask);
 
         ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                 REQUEST_LOCATION_RESPONSE);
-        //CHECK IF IT IS A FRESH LAUNCH OF THE APPLICATION OR NOT
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        FIRST_TIME_LAUNCH = sharedPreferences.getBoolean(FIRST_LAUNCH_KEY, true);
-        sharedPreferences.edit().putBoolean(FIRST_LAUNCH_KEY, false).apply();
 
         //CONNECT TO GOOGLE API FRO ACCESSING LOCATION SERVICES
         if (googleApiClient == null) {
@@ -109,7 +103,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                 SplashActivity.this.finish();
             }
             else{
-                showExplanationDialogue("We run into an error, please retry!");
+                dialogueMethods.showExplanationDialogue("We run into an error, please retry!",SplashActivity.this);
             }
         }
     };
@@ -161,7 +155,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                 List<Address> list = geoCoder.getFromLocation(lat, lon, 10);
                 if (list.size() == 0) {
                     Toast.makeText(getApplicationContext(), R.string.error_location_not_found, Toast.LENGTH_SHORT).show();
-                    showSearchDialogue();
+                    dialogueMethods.showSearchDialogue(SplashActivity.this);
                     return;
                 } else {
                     Log.d(list.get(0).getCountryName() + "", "FETCHING DATA: ");
@@ -169,12 +163,12 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                 }
             }
             else{
-                showExplanationDialogue(getString(R.string.no_location_found_error));
+                dialogueMethods.showExplanationDialogue(getString(R.string.no_location_found_error),SplashActivity.this);
             }
         } catch (SecurityException locationError) {
             locationError.printStackTrace();
             Log.d("LOCATION SECURITY ERROR", "ERROR: ");
-            showExplanationDialogue(getString(R.string.location_security_error));
+            dialogueMethods.showExplanationDialogue(getString(R.string.location_security_error),SplashActivity.this);
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("ERROR GETTING ADDRESS", "ERROR: ");
@@ -201,7 +195,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                     }
                 } else {
                     Log.d("REFUSED", "onRequestPermissionsResult: ");
-                    showExplanationDialogue(getString(R.string.location_denied_error));
+                    dialogueMethods.showExplanationDialogue(getString(R.string.location_denied_error),SplashActivity.this);
                 }
         }
     }
@@ -214,7 +208,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(getApplicationContext(), R.string.error_message_obtaining_location, Toast.LENGTH_SHORT).show();
-        showSearchDialogue();
+        dialogueMethods.showSearchDialogue(SplashActivity.this);
     }
 
     @Override
@@ -222,71 +216,4 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
         Log.d("+++++++++++++++++++" + location.toString(), "LOCATION CHANGED: ");
     }
 
-    private void showExplanationDialogue(String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
-        builder.setMessage(message);
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                showSearchDialogue();
-            }
-        });
-
-        builder.create().show();
-    }
-    //SEARCH DIALOGUE IS ONLY SHOWN WHEN LOCATION SEARCH FAILED
-    private void showSearchDialogue() {
-
-        final AlertDialog.Builder searchDialogBuilder = new AlertDialog.Builder(SplashActivity.this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.search_city_dialog, null);
-        searchDialogBuilder.setView(dialogView);
-
-        final EditText editText = (EditText) dialogView.findViewById(R.id.city_search);
-        searchDialogBuilder.setPositiveButton(R.string.search, null);
-        searchDialogBuilder.setCancelable(false);
-
-        final AlertDialog searchDialog = searchDialogBuilder.create();
-
-        //TO HANDLE THE SEARCH BUTTON CLICK EVENT
-        searchDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                Button searchButton = searchDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                searchButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String c = editText.getText().toString();
-                        if (c.length() > 0) {
-                            if(fetchDataTask==null){
-                                fetchDataTask = new FetchDataTask(getApplicationContext(),SplashActivity.this);
-                            }
-                            fetchDataTask.execute(Utilities.FORECAST_WEATHER, c);
-                            //SAVE THE FIRST SEARCHED CITY IN SHARED PREFERENCES
-                            sharedPreferences.edit().putString(DEFAULT_SEARCH_CITY, c).apply();
-                            searchDialog.dismiss();
-                        } else {
-                            AlertDialog.Builder errorBuilder = new AlertDialog.Builder(SplashActivity.this);
-                            errorBuilder.setTitle(R.string.search_prompt_text);
-                            errorBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            });
-                            errorBuilder.create().show();
-                        }
-                    }
-                });
-            }
-        });
-        searchDialog.show();
-    }
 }

@@ -1,19 +1,29 @@
 package com.team.jz.weather.ActivitiesAndFragments;
 
+
 import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.team.jz.weather.NetworkConnections.DownloadCallback;
 import com.team.jz.weather.NetworkConnections.FetchDataTask;
 import com.team.jz.weather.R;
+import com.team.jz.weather.Weather.DialogueMethods;
 import com.team.jz.weather.Weather.Utilities;
 import com.team.jz.weather.Weather.WeatherReading;
 
@@ -23,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 // THIS IS THE MAIN ACTIVITY TO DISPLAY THE WEATHER DATA
 
 
+    private final String WEATHER_ARRAY_LIST_KEY = "weatherArrayListKey";
     private int CURRENT_FRAGMENT;
     private String CURRENT_FRAG_KEY = "currentFrag";
     private String WEATHER_FRAG_TAG = "weatherDetailFragment";
@@ -32,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
     //1 - CITIES LIST FRAGMENT
     private ArrayList<WeatherReading> weatherReadings;
     private ArrayList<String> cities;
+    private BottomNavigationView bottomNavigationView;
+    private  FetchDataTask fetchDataTask;
 
 
     @Override
@@ -39,11 +52,16 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        weatherReadings = (ArrayList<WeatherReading>) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
+        if(savedInstanceState!=null){
+            weatherReadings = (ArrayList<WeatherReading>) savedInstanceState.getSerializable(WEATHER_ARRAY_LIST_KEY);
+        }
+
+        fetchDataTask = new FetchDataTask(getApplicationContext(),this);
         //GET WEATHER READING OBJECT FROM SPLASH INTENT
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_menu);
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_menu);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        weatherReadings = (ArrayList<WeatherReading>) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -63,12 +81,14 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
             if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG) != null) {
                 if (weatherDetailFragment.isAdded()) {
+                    weatherDetailFragment.updateWeatherReadings(weatherReadings);
                     Log.d("555555555555555555555", "onCreate: ");
                     return;
                 }
             } else {
                 weatherDetailFragment = new WeatherDetailFragment();
             }
+            weatherDetailFragment.updateWeatherReadings(weatherReadings);
             transaction.add(R.id.fragment, weatherDetailFragment, WEATHER_FRAG_TAG);
             CURRENT_FRAGMENT = 0;
 
@@ -95,17 +115,21 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             FragmentManager fragmentManager = getSupportFragmentManager();
+            item.setChecked(true);
+
             switch (item.getItemId()){
                 case R.id.details_tab:
                     WeatherDetailFragment weatherDetailFragment = (WeatherDetailFragment) fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG);
                     if(weatherDetailFragment!=null) {
                         if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG).isAdded()) {
-                            return true;
+                            weatherDetailFragment.updateWeatherReadings(weatherReadings);
                         }
                     }else {
-                        replaceFragment(new WeatherDetailFragment(),WEATHER_FRAG_TAG,fragmentManager);
+                        weatherDetailFragment = new WeatherDetailFragment();
                     }
-
+                    weatherDetailFragment.updateWeatherReadings(weatherReadings);
+                    replaceFragment(weatherDetailFragment,WEATHER_FRAG_TAG,fragmentManager);
+                    Log.d((weatherReadings==null)+"a", "onNavigationItemSelected: ");
                     CURRENT_FRAGMENT = 0;
                     return true;
                 case R.id.settings_tab:
@@ -131,14 +155,13 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
     };
 
     private void refreshData() {
-        FetchDataTask fetchDataTask = new FetchDataTask(getApplicationContext(),this);
         fetchDataTask.execute(Utilities.FORECAST_WEATHER);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_FRAG_KEY,CURRENT_FRAGMENT);
+        outState.putSerializable(WEATHER_ARRAY_LIST_KEY,weatherReadings);
     }
 
     private void replaceFragment(Fragment fragment, String TAG, FragmentManager fragmentManager){
@@ -147,11 +170,32 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         transaction.commit();
     }
 
-    @Override
-    public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
-        weatherReadings = weatherReading;
+    public void goToWeatherDataFragment(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        WeatherDetailFragment w = (WeatherDetailFragment) getSupportFragmentManager().findFragmentByTag(WEATHER_FRAG_TAG);
+        if (w ==null){
+            w = new WeatherDetailFragment();
+        }
+        Menu menu = bottomNavigationView.getMenu();
+        menu.getItem(0).setChecked(true);
+        menu.getItem(1).setChecked(false);
+        w.updateWeatherReadings(weatherReadings);
+        transaction.replace(R.id.fragment,w,WEATHER_FRAG_TAG);
+        transaction.commit();
     }
 
+    @Override
+    public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
+
+        if(weatherReading == null){
+            DialogueMethods d = new DialogueMethods(getApplicationContext(),fetchDataTask);
+            d.showExplanationDialogue(getString(R.string.error_location),this);
+            return;
+        }
+        Log.d("aaaaaaaaaaaaaaaaa", "finishedDownloading: ");
+        weatherReadings = weatherReading;
+        goToWeatherDataFragment();
+    }
 
     //TODO: MAKE FRESH CALL WHEN USER TAPS ON UPDATE BUTTON OR ANOTHER GESTURE
 

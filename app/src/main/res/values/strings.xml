@@ -101,6 +101,7 @@
     <string name="server_error">SERVERS ARE DOWN</string>
     <string name="unkown_error">NOT SURE WHAT HAPPENED</string>
 
+
     <!--setting for terms of use-->
     <string name="pref_header_terms_of_use">Terms of use</string>
 
@@ -109,4 +110,9 @@
 
     <!--setting for temperture unit-->
     <string name="pref_header_temperature_unit">Temperature unit</string>
+
+    <string name="add_city">Add City</string>
+    <string name="add">Add</string>
+    <string name="error_location">We couldn\'t find the location you are looking for, please try again</string>
+
 </resources>
