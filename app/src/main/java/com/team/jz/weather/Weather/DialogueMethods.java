@@ -7,11 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.team.jz.weather.ActivitiesAndFragments.MainActivity;
-import com.team.jz.weather.ActivitiesAndFragments.SplashActivity;
 import com.team.jz.weather.NetworkConnections.DownloadCallback;
 import com.team.jz.weather.NetworkConnections.FetchDataTask;
 import com.team.jz.weather.R;
@@ -27,6 +29,12 @@ public class DialogueMethods implements DownloadCallback {
     private Context context;
     private FetchDataTask fetchDataTask;
     private DownloadCallback downloadCallback;
+
+    public DialogueMethods(Context context){
+        this.context = context;
+        fetchDataTask = null;
+    }
+
     public DialogueMethods(Context context,FetchDataTask fetchDataTask){
         this.context = context;
         this.fetchDataTask = fetchDataTask;
@@ -100,6 +108,44 @@ public class DialogueMethods implements DownloadCallback {
         searchDialog.show();
     }
 
+    public void showAddCityDialogue(final ArrayAdapter adapter, final ArrayList cities){
+        AlertDialog.Builder addCityDialogueBuilder = new AlertDialog.Builder(context);
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View v = layoutInflater.inflate(R.layout.search_city_dialog,null,false);
+        addCityDialogueBuilder.setView(v);
+
+        TextView textView = v.findViewById(R.id.prompt_in_dialogue);
+        textView.setText(R.string.add_city);
+
+        final EditText editText = (EditText) v.findViewById(R.id.city_search);
+        addCityDialogueBuilder.setPositiveButton(R.string.add, null);
+        addCityDialogueBuilder.setCancelable(false);
+        final AlertDialog addDialogue = addCityDialogueBuilder.create();
+
+        //TO HANDLE THE SEARCH BUTTON CLICK EVENT
+        addDialogue.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button addButton = addDialogue.getButton(DialogInterface.BUTTON_POSITIVE);
+                addButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(!cities.contains(editText.getText().toString())) {
+                            cities.add(editText.getText().toString());
+                            adapter.notifyDataSetChanged();
+                        }
+                        else{
+                            Toast.makeText(context,"City already saved",Toast.LENGTH_SHORT).show();
+                        }
+                        addDialogue.dismiss();
+                    }
+                });
+                editText.requestFocus();
+            }
+        });
+        addDialogue.show();
+    }
+
     @Override
     public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
 
@@ -108,3 +154,4 @@ public class DialogueMethods implements DownloadCallback {
 
     }
 }
+//TODO: OPTIMIZE METHODS AND VARIABLES

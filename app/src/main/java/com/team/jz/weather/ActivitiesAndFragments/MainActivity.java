@@ -1,22 +1,15 @@
 package com.team.jz.weather.ActivitiesAndFragments;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.team.jz.weather.NetworkConnections.DownloadCallback;
 import com.team.jz.weather.NetworkConnections.FetchDataTask;
@@ -108,11 +101,14 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         transaction.commit();
     }
 
-
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             FragmentManager fragmentManager = getSupportFragmentManager();
+
+            for(int i = 0;i<bottomNavigationView.getMenu().size();i++){
+                bottomNavigationView.getMenu().getItem(i).setChecked(false);
+            }
             item.setChecked(true);
 
             switch (item.getItemId()){
