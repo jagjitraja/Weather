@@ -103,5 +103,7 @@
     <string name="add_city">Add City</string>
     <string name="add">Add</string>
     <string name="error_location">We couldn\'t find the location you are looking for, please try again</string>
-	<string name="delete">Delete</string>
+    <string name="delete">Delete</string>
+    <string name="units">Units</string>
+    <string name="about">About Us</string>
 </resources>
