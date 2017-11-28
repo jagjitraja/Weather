@@ -91,9 +91,9 @@
     <string name="saved_cities">Saved Cities</string>
     <string name="settings">Settings</string>
     <string name="error_message_obtaining_location">We were unable to retrieve your location, Please try again later or search</string>
-    <string name="error_location_not_found">An Error Occured but you can search for city manually</string>
+    <string name="error_location_not_found">An Error Occurred but you can search for city manually</string>
     <string name="no_location_found_error">Sadly we couldnt locate you, but you can search manually as well</string>
-    <string name="location_security_error">An error occured, but you can also search manually!!</string>
+    <string name="location_security_error">An error occurred, but you can also search manually!!</string>
     <string name="location_denied_error">We need to access device location to get weather data but you can also search manually!!</string>
     <string name="search_prompt_text">Please type in a search criteria</string>
     <string name="ok">OK</string>
@@ -108,7 +108,7 @@
     <!--setting for enable or disable location-->
     <string name="pref_header_enable_or_disable_location">Enable/Disable location</string>
 
-    <!--setting for temperture unit-->
+    <!--setting for temperature unit-->
     <string name="pref_header_temperature_unit">Temperature unit</string>
 
     <string name="add_city">Add City</string>

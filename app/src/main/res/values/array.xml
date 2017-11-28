@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--entry value of temperature unit-->
+    <string-array name="units">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+
+    <!--entries of temperature unit-->
+    <string-array name="temperature_unit">
+        <item>Celsius</item>
+        <item>Fahrenheit</item>
+    </string-array>
+</resources>
