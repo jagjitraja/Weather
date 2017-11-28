@@ -52,6 +52,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
     private FetchDataTask fetchDataTask;
     private Handler handler;
     private DialogueMethods dialogueMethods;
+    public final static String CITY_PREF_KEY ="locationCity";
 
     private GoogleApiClient googleApiClient;
     private final int REQUEST_LOCATION_RESPONSE = 0;
@@ -160,6 +161,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
                 } else {
                     Log.d(list.get(0).getCountryName() + "", "FETCHING DATA: ");
                     fetchDataTask.execute(Utilities.FORECAST_WEATHER, list.get(0).getLocality(), lat + "", lon + "");
+
                 }
             }
             else{

@@ -32,6 +32,7 @@ public class SavedCitiesListFragment extends Fragment implements DownloadCallbac
 
     private final int DELETE_MENU_ID = 1;
     private ArrayList<String> cities;
+    private String cityClicked = null;
     CitiesAdapter adapter;
 
     public SavedCitiesListFragment() {
@@ -58,6 +59,7 @@ public class SavedCitiesListFragment extends Fragment implements DownloadCallbac
 
                 FetchDataTask fetchDataTask = new FetchDataTask(getContext(),SavedCitiesListFragment.this);
                 fetchDataTask.execute(Utilities.FORECAST_WEATHER,cities.get(i));
+                cityClicked = cities.get(i);
             }
         });
 
@@ -95,6 +97,7 @@ public class SavedCitiesListFragment extends Fragment implements DownloadCallbac
         MainActivity main = (MainActivity) getActivity();
         main.finishedDownloading(weatherReading);
         main.goToWeatherDataFragment();
+        main.setCurrentCity(cityClicked);
     }
 
     public class CitiesAdapter extends ArrayAdapter<String>{

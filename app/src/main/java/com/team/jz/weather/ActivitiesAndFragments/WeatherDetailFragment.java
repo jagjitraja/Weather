@@ -1,5 +1,7 @@
 package com.team.jz.weather.ActivitiesAndFragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,8 @@ import com.team.jz.weather.R;
 import com.team.jz.weather.Weather.WeatherReading;
 
 import java.util.ArrayList;
+
+import static com.team.jz.weather.ActivitiesAndFragments.SplashActivity.CITY_PREF_KEY;
 
 public class WeatherDetailFragment extends Fragment {
 
@@ -70,7 +74,11 @@ public class WeatherDetailFragment extends Fragment {
         list.setAdapter(new WeatherReadingForecastAdapter(getContext(),R.layout.forecast_weather_reading_item,
                 weatherReadings.subList(1,weatherReadings.size())));
 
-        Log.d("wwwwwwwwwwwwwww", "updateWeatherReadings: ");
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(SettingsActivity.SHARED_PREFS_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor s = sharedPreferences.edit();
+        s.putString(weatherReadings.get(0).getCity(),CITY_PREF_KEY).apply();
+        s.commit();
+        Log.d("wwwwwwwwwwwwwww", "updateWeatherReadings: "+(weatherReadings==null));
         return weatherDetailView;
     }
 

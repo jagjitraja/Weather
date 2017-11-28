@@ -1,11 +1,13 @@
 package com.team.jz.weather.NetworkConnections;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.team.jz.weather.ActivitiesAndFragments.SettingsActivity;
 import com.team.jz.weather.R;
 import com.team.jz.weather.Weather.Utilities;
 import com.team.jz.weather.Weather.WeatherJsonParser;

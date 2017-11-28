@@ -1,7 +1,9 @@
 package com.team.jz.weather.ActivitiesAndFragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -20,6 +22,9 @@ import com.team.jz.weather.Weather.Utilities;
 import com.team.jz.weather.Weather.WeatherReading;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import static com.team.jz.weather.ActivitiesAndFragments.SettingsActivity.SHARED_PREFS_KEY;
 
 public class MainActivity extends AppCompatActivity implements DownloadCallback {
 // THIS IS THE MAIN ACTIVITY TO DISPLAY THE WEATHER DATA
@@ -36,7 +41,11 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
     private ArrayList<WeatherReading> weatherReadings;
     private ArrayList<String> cities;
     private BottomNavigationView bottomNavigationView;
-    private  FetchDataTask fetchDataTask;
+    private FetchDataTask fetchDataTask;
+    private WeatherDetailFragment weatherDetailFragment;
+    private SavedCitiesListFragment savedCitiesListFragment;
+    private String city;
+    private DialogueMethods d;
 
 
     @Override
@@ -44,21 +53,36 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        d = new DialogueMethods(getApplicationContext(),fetchDataTask);
+        fetchDataTask = new FetchDataTask(getApplicationContext(),this);
         weatherReadings = (ArrayList<WeatherReading>) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
+
+        if(weatherReadings == null){
+            SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFS_KEY,MODE_PRIVATE);
+            if(city==null) {
+                city = sharedPref.getString(SplashActivity.CITY_PREF_KEY, "KAMLOOPS");
+
+            }
+            try {
+                weatherReadings = fetchDataTask.execute(Utilities.FORECAST_WEATHER,city).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
         if(savedInstanceState!=null){
             weatherReadings = (ArrayList<WeatherReading>) savedInstanceState.getSerializable(WEATHER_ARRAY_LIST_KEY);
         }
 
-        fetchDataTask = new FetchDataTask(getApplicationContext(),this);
         //GET WEATHER READING OBJECT FROM SPLASH INTENT
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_menu);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        //transaction.commit();    transaction.add(R.id.parent_layout,weatherDetailFragment);
         //TODO: SET BOTTOM NAV ACTIVE ON CREATE WITH SAVED CITIES
         if(savedInstanceState!=null) {
             CURRENT_FRAGMENT = savedInstanceState.getInt(CURRENT_FRAG_KEY);
@@ -66,15 +90,14 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         else{
             CURRENT_FRAGMENT = 0;
         }
-        Log.d("--------------"+CURRENT_FRAGMENT, "onCreate: ");
+
         if(CURRENT_FRAGMENT == 0) {
-            WeatherDetailFragment weatherDetailFragment;
+
             weatherDetailFragment = (WeatherDetailFragment) fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG);
 
             if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG) != null) {
                 if (weatherDetailFragment.isAdded()) {
                     weatherDetailFragment.updateWeatherReadings(weatherReadings);
-                    Log.d("555555555555555555555", "onCreate: ");
                     return;
                 }
             } else {
@@ -85,11 +108,9 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
             CURRENT_FRAGMENT = 0;
 
         }else {
-            SavedCitiesListFragment savedCitiesListFragment;
             savedCitiesListFragment = (SavedCitiesListFragment) fragmentManager.findFragmentByTag(CITIES_FRAG_TAG);
             if (fragmentManager.findFragmentByTag(CITIES_FRAG_TAG) != null) {
                 if (savedCitiesListFragment.isAdded()) {
-                    Log.d(";;;;;;;;;;;;;;;;;;;", "onCreate: ");
                     return;
                 }
             } else {
@@ -99,7 +120,9 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
             CURRENT_FRAGMENT = 1;
         }
 
+        Log.d("ADDED THE FRAGMENT", "onCreate: ");
         transaction.commit();
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -114,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
             switch (item.getItemId()){
                 case R.id.details_tab:
-                    WeatherDetailFragment weatherDetailFragment = (WeatherDetailFragment) fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG);
+                    weatherDetailFragment = (WeatherDetailFragment) fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG);
                     if(weatherDetailFragment!=null) {
                         if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG).isAdded()) {
                             weatherDetailFragment.updateWeatherReadings(weatherReadings);
@@ -129,17 +152,19 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
                     return true;
                 case R.id.settings_tab:
                     Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
                     return true;
 
                 case R.id.saved_cities_tab:
-                    SavedCitiesListFragment savedCitiesListFragment = (SavedCitiesListFragment) fragmentManager.findFragmentByTag(CITIES_FRAG_TAG);
+                    savedCitiesListFragment = (SavedCitiesListFragment) fragmentManager.findFragmentByTag(CITIES_FRAG_TAG);
                     if(savedCitiesListFragment!=null) {
                         if (fragmentManager.findFragmentByTag(CITIES_FRAG_TAG).isAdded()) {
                             return true;
                         }
                     }else {
-                        replaceFragment(new SavedCitiesListFragment(),CITIES_FRAG_TAG,fragmentManager);
+                        savedCitiesListFragment = new SavedCitiesListFragment();
+                        replaceFragment(savedCitiesListFragment,CITIES_FRAG_TAG,fragmentManager);
                     }
                     CURRENT_FRAGMENT = 1;
                     return true;
@@ -167,27 +192,28 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
     public void goToWeatherDataFragment(){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        WeatherDetailFragment w = (WeatherDetailFragment) getSupportFragmentManager().findFragmentByTag(WEATHER_FRAG_TAG);
-        if (w ==null){
-            w = new WeatherDetailFragment();
+        weatherDetailFragment = (WeatherDetailFragment) getSupportFragmentManager().findFragmentByTag(WEATHER_FRAG_TAG);
+        if (weatherDetailFragment ==null){
+            weatherDetailFragment = new WeatherDetailFragment();
         }
         Menu menu = bottomNavigationView.getMenu();
         menu.getItem(0).setChecked(true);
         menu.getItem(1).setChecked(false);
-        w.updateWeatherReadings(weatherReadings);
-        transaction.replace(R.id.fragment,w,WEATHER_FRAG_TAG);
+        weatherDetailFragment.updateWeatherReadings(weatherReadings);
+        transaction.replace(R.id.fragment,weatherDetailFragment,WEATHER_FRAG_TAG);
         transaction.commit();
+    }
+    public void setCurrentCity(String c){
+        city = c;
     }
 
     @Override
     public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
 
         if(weatherReading == null){
-            DialogueMethods d = new DialogueMethods(getApplicationContext(),fetchDataTask);
             d.showExplanationDialogue(getString(R.string.error_location),this);
             return;
         }
-        Log.d("aaaaaaaaaaaaaaaaa", "finishedDownloading: ");
         weatherReadings = weatherReading;
         goToWeatherDataFragment();
     }
