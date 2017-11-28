@@ -9,10 +9,11 @@
         android:title="@string/pref_header_notifications" />
     <header
         android:fragment="com.team.jz.weather.ActivitiesAndFragments.SettingsActivity$TemperatureUnitPreferenceFragment"
-    android:icon="@drawable/icons8_temperature_26"
-    android:title="@string/pref_header_temperature_unit" />
+        android:icon="@drawable/icons8_temperature_26"
+        android:title="@string/pref_header_temperature_unit" />
 
     <header
+        android:fragment="com.team.jz.weather.ActivitiesAndFragments.SettingsActivity$LocationSettingFragment"
         android:icon="@drawable/icons8_map_editing_26"
         android:title="@string/pref_header_enable_or_disable_location" />
 

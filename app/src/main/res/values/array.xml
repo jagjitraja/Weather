@@ -11,4 +11,16 @@
         <item>Celsius</item>
         <item>Fahrenheit</item>
     </string-array>
+
+    <!--entries of enable/disable location service-->
+    <string-array name="location">
+        <item>Enable</item>
+        <item>Disable</item>
+    </string-array>
+
+    <!--entry value of location-->
+    <string-array name="on_off_location">
+        <item>Enable</item>
+        <item>Disable</item>
+    </string-array>
 </resources>
