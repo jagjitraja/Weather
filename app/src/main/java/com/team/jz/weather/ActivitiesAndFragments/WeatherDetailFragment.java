@@ -1,15 +1,18 @@
 package com.team.jz.weather.ActivitiesAndFragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,7 +54,10 @@ public class WeatherDetailFragment extends Fragment {
         View weatherDetailView = inflater.inflate(R.layout.fragment_weather_detail,container,false);
 
         View view = weatherDetailView.findViewById(R.id.background_image);
+
+
         view.setBackgroundResource(weatherReadings.get(0).getBackground());
+        view.getBackground().setAlpha(200);
         city = (TextView) weatherDetailView.findViewById(R.id.city_name);
         temp = (TextView) weatherDetailView.findViewById(R.id.weather_temperature);
         weatherIcon = (ImageView) weatherDetailView.findViewById(R.id.weather_icon);
@@ -73,6 +79,22 @@ public class WeatherDetailFragment extends Fragment {
             unit = " F";
         }
 
+        Button shareButton = (Button) weatherDetailView.findViewById(R.id.shareButton);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShareActionProvider shareActionProvider = new ShareActionProvider(getContext());
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                shareActionProvider.setShareIntent(intent);
+                intent.setType("text/plain");
+                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "\n"+ weatherReadings.get(0).getCity()+" WEATHER\n");
+                intent.putExtra(android.content.Intent.EXTRA_TEXT, "The weather in "
+                        + weatherReadings.get(0).getCity()
+                        +" is " + weatherReadings.get(0).toString());
+                startActivity(Intent.createChooser(intent,getString(R.string.share)));
+
+            }
+        });
 
         city.setText(weatherReadings.get(0).getCity());
         temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+unit);

@@ -26,7 +26,6 @@ public class Utilities {
     public final static String FORECAST_WEATHER = "FORECAST";
     public final static String CNT_VAL = "39";
 
-
     public final static String DATE = "dt";
     public final static String COORD = "coord";
     public final static String LIST = "list";
