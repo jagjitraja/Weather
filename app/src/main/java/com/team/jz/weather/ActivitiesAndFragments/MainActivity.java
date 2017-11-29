@@ -1,18 +1,22 @@
 package com.team.jz.weather.ActivitiesAndFragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.team.jz.weather.NetworkConnections.DownloadCallback;
 import com.team.jz.weather.NetworkConnections.FetchDataTask;
@@ -72,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
                 e.printStackTrace();
             }
         }
-
         if(savedInstanceState!=null){
             weatherReadings = (ArrayList<WeatherReading>) savedInstanceState.getSerializable(WEATHER_ARRAY_LIST_KEY);
             cities = (ArrayList<String>) savedInstanceState.getSerializable(CITIES_ARRAY_LIST_KEY);
@@ -81,6 +84,10 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         //GET WEATHER READING OBJECT FROM SPLASH INTENT
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_nav_menu);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+        for(int i = 0;i<bottomNavigationView.getMenu().size();i++){
+            bottomNavigationView.getMenu().getItem(i).setChecked(false);
+        }
+        bottomNavigationView.getMenu().getItem(0).setChecked(true);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -94,9 +101,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         }
 
         if(CURRENT_FRAGMENT == 0) {
-
             weatherDetailFragment = (WeatherDetailFragment) fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG);
-
             if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG) != null) {
                 if (weatherDetailFragment.isAdded()) {
                     weatherDetailFragment.updateWeatherReadings(weatherReadings);
@@ -124,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         transaction.commit();
 
     }
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override

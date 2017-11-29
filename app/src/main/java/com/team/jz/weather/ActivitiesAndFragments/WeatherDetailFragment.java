@@ -3,6 +3,7 @@ package com.team.jz.weather.ActivitiesAndFragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -40,12 +41,12 @@ public class WeatherDetailFragment extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         View weatherDetailView = inflater.inflate(R.layout.fragment_weather_detail,container,false);
 
@@ -60,11 +61,22 @@ public class WeatherDetailFragment extends Fragment {
         wind_speed = (TextView) weatherDetailView.findViewById(R.id.wind_val);
 
         weatherIcon.setBackgroundResource(weatherReadings.get(0).getWeatherIcon());
+        SharedPreferences sharedPreferences = PreferenceManager.
+                getDefaultSharedPreferences(getContext());
+        int c = Integer.parseInt(sharedPreferences.getString("units_pref_list","0"));
+        String unit = " C";
+        if(c==0){
+            unit = " C";
+        }else{
+            unit = " F";
+        }
+
+
         city.setText(weatherReadings.get(0).getCity());
-        temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+" C");
+        temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+unit);
         type.setText(weatherReadings.get(0).getWeatherType().toString());
-        min_temp.setText(weatherReadings.get(0).getMin_temperature()+getResources().getString(R.string.super_script)+" C");
-        max_temp.setText(weatherReadings.get(0).getMax_temperature()+getResources().getString(R.string.super_script)+" C");
+        min_temp.setText(weatherReadings.get(0).getMin_temperature()+getResources().getString(R.string.super_script)+unit);
+        max_temp.setText(weatherReadings.get(0).getMax_temperature()+getResources().getString(R.string.super_script)+unit);
         humidity.setText(weatherReadings.get(0).getHumidity()+" %");
         pressure.setText(weatherReadings.get(0).getPressure()+" hpa");
         wind_speed.setText(weatherReadings.get(0).getWind_speed()+"m/s\n"+weatherReadings.get(0).getWind_direction()+"deg");
@@ -74,16 +86,15 @@ public class WeatherDetailFragment extends Fragment {
         list.setAdapter(new WeatherReadingForecastAdapter(getContext(),R.layout.forecast_weather_reading_item,
                 weatherReadings.subList(1,weatherReadings.size())));
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(SettingsActivity.SHARED_PREFS_KEY, Context.MODE_PRIVATE);
+        sharedPreferences = getContext().getSharedPreferences(SettingsActivity.SHARED_PREFS_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor s = sharedPreferences.edit();
         s.putString(weatherReadings.get(0).getCity(),CITY_PREF_KEY).apply();
         s.commit();
-        Log.d("wwwwwwwwwwwwwww", "updateWeatherReadings: "+(weatherReadings==null));
         return weatherDetailView;
     }
 
     public void updateWeatherReadings(ArrayList<WeatherReading> weatherReadings){
-        Log.d("aaaaaaaaaaaaaaa", "updateWeatherReadings: ");
+
         this.weatherReadings = weatherReadings;
         if(weatherIcon!=null){
             weatherIcon.setBackgroundResource(weatherReadings.get(0).getWeatherIcon());

@@ -18,7 +18,8 @@ public class Utilities {
     public final static String FORMAT_PARAMETER = "mode";
     public final static String FORMAT_VALUE = "json";
     public final static String UNITS_PARAMETER = "units";
-    public final static String UNITS_VALUE = "metric";
+    public final static String METRIC_UNITS_VALUE = "metric";
+    public final static String IMPERIAL_UNITS_VALUE = "imperial";
     public final static String API_PARAMETER = "appid";
     public final static String ZIP_CODE_PARAMETER = "zip";
     public final static String TODAY_WEATHER = "TODAY";

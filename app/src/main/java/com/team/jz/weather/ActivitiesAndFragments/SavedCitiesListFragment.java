@@ -47,7 +47,7 @@ public class SavedCitiesListFragment extends Fragment implements DownloadCallbac
             final MainActivity main = (MainActivity) getActivity();
             cities = main.getCities();
         }
-        
+
     }
 
     @Override
