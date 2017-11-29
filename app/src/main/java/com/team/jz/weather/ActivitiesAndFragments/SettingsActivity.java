@@ -9,12 +9,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.view.View;
+import android.webkit.WebView;
 
 import com.team.jz.weather.R;
 
@@ -64,31 +69,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+        if (preference != null) {
+            preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), ""));
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupActionBar();
-    }
-
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     @Override
@@ -126,7 +118,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || UnitsPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName);
+                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
+                ||WebViewFragment.class.getName().equals(fragmentName);
     }
 
 
@@ -157,8 +150,22 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_data_sync);
             setHasOptionsMenu(true);
-
             bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+        }
+
+    }
+
+    public static class WebViewFragment extends PreferenceFragment {
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            LayoutInflater inflater = LayoutInflater.from(getActivity().getApplicationContext());
+            View v = inflater.inflate(R.layout.web_view_frag,null);
+            WebView webView = v.findViewById(R.id.about_us_web_view);
+            String summary = "<html><body>You scored <b>192</b> points.</body></html>";
+            webView.loadData(summary, "text/html; charset=utf-8", "UTF-8");
+            webView.setBackgroundColor(getResources().getColor(R.color.colorAccent, getActivity().getTheme()));
         }
 
     }

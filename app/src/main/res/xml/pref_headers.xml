@@ -18,6 +18,7 @@
 
     <header
         android:icon="@drawable/icons8_view_terms_of_use_26"
-        android:title="@string/about" />
+        android:title="@string/about"
+        android:fragment="com.team.jz.weather.ActivitiesAndFragments.SettingsActivity$WebViewFragment"/>
 
 </preference-headers>
