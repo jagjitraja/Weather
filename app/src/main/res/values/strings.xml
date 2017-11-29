@@ -104,4 +104,6 @@
     <string name="units">Units</string>
     <string name="about">About Us</string>
     <string name="units_option">Imperial/ Metric</string>
+    <string name="internet_connection">No Internet connection detected!</string>
+    <string name="already_saveed">City already saved</string>
 </resources>

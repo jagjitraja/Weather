@@ -2,6 +2,8 @@ package com.team.jz.weather.NetworkConnections;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -38,6 +40,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
         context = c;
         this.callback = downloadCallback;
     }
+
 //TODO: CHECK NETWORK STATE BEFORE EXECUTING
     @Override
     protected ArrayList<WeatherReading> doInBackground(String... strings) {
@@ -158,5 +161,12 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager
+                .getActiveNetworkInfo();
+        if (activeNetworkInfo == null && !activeNetworkInfo.isConnected()){
+            Toast.makeText(context,context.getString(R.string.internet_connection),Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -135,7 +135,7 @@ public class DialogueMethods implements DownloadCallback {
                             adapter.notifyDataSetChanged();
                         }
                         else{
-                            Toast.makeText(context,"City already saved",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, R.string.already_saveed,Toast.LENGTH_SHORT).show();
                         }
                         addDialogue.dismiss();
                     }

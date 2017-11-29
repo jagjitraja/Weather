@@ -34,7 +34,6 @@ public class SavedCitiesListFragment extends Fragment implements DownloadCallbac
     private ArrayList<String> cities;
     private String cityClicked = null;
     CitiesAdapter adapter;
-
     public SavedCitiesListFragment() {
         cities = new ArrayList<>();
     }
@@ -42,6 +41,13 @@ public class SavedCitiesListFragment extends Fragment implements DownloadCallbac
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cities = new ArrayList<>();
+        if(savedInstanceState!=null){
+            cities = (ArrayList<String>) savedInstanceState.getSerializable(MainActivity.CITIES_ARRAY_LIST_KEY);
+        }else{
+            final MainActivity main = (MainActivity) getActivity();
+            cities = main.getCities();
+        }
+        
     }
 
     @Override
@@ -51,12 +57,9 @@ public class SavedCitiesListFragment extends Fragment implements DownloadCallbac
         adapter= new CitiesAdapter(getContext(),R.layout.city_list_item,cities);
         final ListView citiesList = citiesListViewParent.findViewById(R.id.saved_cities_list);
         citiesList.setAdapter(adapter);
-
         citiesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d(cities.get(i), "onItemClick: ");
-
                 FetchDataTask fetchDataTask = new FetchDataTask(getContext(),SavedCitiesListFragment.this);
                 fetchDataTask.execute(Utilities.FORECAST_WEATHER,cities.get(i));
                 cityClicked = cities.get(i);
@@ -71,6 +74,7 @@ public class SavedCitiesListFragment extends Fragment implements DownloadCallbac
                 dialogueMethods.showAddCityDialogue(adapter,cities);
             }
         });
+        Log.d(cities+"aaa", "onCreateView: ");
         registerForContextMenu(citiesList);
         return citiesListViewParent;
     }
@@ -93,22 +97,27 @@ public class SavedCitiesListFragment extends Fragment implements DownloadCallbac
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(MainActivity.CITIES_ARRAY_LIST_KEY,cities);
+    }
+
+    @Override
     public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
         MainActivity main = (MainActivity) getActivity();
         main.finishedDownloading(weatherReading);
         main.goToWeatherDataFragment();
+        main.setCities(cities);
         main.setCurrentCity(cityClicked);
     }
 
     public class CitiesAdapter extends ArrayAdapter<String>{
-
         public CitiesAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<String> objects) {
             super(context, resource, objects);
         }
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
             if(convertView==null){
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.city_list_item,parent,false);
             }

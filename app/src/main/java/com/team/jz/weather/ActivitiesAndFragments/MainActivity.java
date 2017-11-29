@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
 
     private final String WEATHER_ARRAY_LIST_KEY = "weatherArrayListKey";
+    public static final String CITIES_ARRAY_LIST_KEY = "weatherArrayListKey";
     private int CURRENT_FRAGMENT;
     private String CURRENT_FRAG_KEY = "currentFrag";
     private String WEATHER_FRAG_TAG = "weatherDetailFragment";
@@ -56,12 +57,12 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         d = new DialogueMethods(getApplicationContext(),fetchDataTask);
         fetchDataTask = new FetchDataTask(getApplicationContext(),this);
         weatherReadings = (ArrayList<WeatherReading>) getIntent().getSerializableExtra(SplashActivity.WEATHER_READING_KEY);
+        cities = new ArrayList<>();
 
         if(weatherReadings == null){
             SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFS_KEY,MODE_PRIVATE);
             if(city==null) {
                 city = sharedPref.getString(SplashActivity.CITY_PREF_KEY, "KAMLOOPS");
-
             }
             try {
                 weatherReadings = fetchDataTask.execute(Utilities.FORECAST_WEATHER,city).get();
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
         if(savedInstanceState!=null){
             weatherReadings = (ArrayList<WeatherReading>) savedInstanceState.getSerializable(WEATHER_ARRAY_LIST_KEY);
+            cities = (ArrayList<String>) savedInstanceState.getSerializable(CITIES_ARRAY_LIST_KEY);
         }
 
         //GET WEATHER READING OBJECT FROM SPLASH INTENT
@@ -119,8 +121,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
             transaction.add(R.id.fragment, savedCitiesListFragment, WEATHER_FRAG_TAG);
             CURRENT_FRAGMENT = 1;
         }
-
-        Log.d("ADDED THE FRAGMENT", "onCreate: ");
         transaction.commit();
 
     }
@@ -147,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
                     }
                     weatherDetailFragment.updateWeatherReadings(weatherReadings);
                     replaceFragment(weatherDetailFragment,WEATHER_FRAG_TAG,fragmentManager);
-                    Log.d((weatherReadings==null)+"a", "onNavigationItemSelected: ");
                     CURRENT_FRAGMENT = 0;
                     return true;
                 case R.id.settings_tab:
@@ -182,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(WEATHER_ARRAY_LIST_KEY,weatherReadings);
+        outState.putSerializable(CITIES_ARRAY_LIST_KEY,cities);
     }
 
     private void replaceFragment(Fragment fragment, String TAG, FragmentManager fragmentManager){
@@ -207,6 +207,10 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         city = c;
     }
 
+
+    public void setCities(ArrayList cities){
+        this.cities = cities;
+    }
     @Override
     public void finishedDownloading(ArrayList<WeatherReading> weatherReading) {
 
@@ -216,6 +220,10 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         }
         weatherReadings = weatherReading;
         goToWeatherDataFragment();
+    }
+
+    public ArrayList<String> getCities() {
+        return cities;
     }
 
     //TODO: MAKE FRESH CALL WHEN USER TAPS ON UPDATE BUTTON OR ANOTHER GESTURE
