@@ -49,6 +49,8 @@ public class WeatherDetailFragment extends Fragment {
 
         View weatherDetailView = inflater.inflate(R.layout.fragment_weather_detail,container,false);
 
+        View view = weatherDetailView.findViewById(R.id.background_image);
+        view.setBackgroundResource(weatherReadings.get(0).getBackground());
         city = (TextView) weatherDetailView.findViewById(R.id.city_name);
         temp = (TextView) weatherDetailView.findViewById(R.id.weather_temperature);
         weatherIcon = (ImageView) weatherDetailView.findViewById(R.id.weather_icon);
