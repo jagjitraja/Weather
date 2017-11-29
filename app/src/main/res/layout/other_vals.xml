@@ -25,7 +25,7 @@
         android:layout_weight="2"
         android:gravity="center"
         android:fontFamily="cursive"
-        android:textSize="20dp" />
+        android:textSize="15dp" />
 
     <TextView
         android:layout_width="25dp"
@@ -40,7 +40,7 @@
         android:fontFamily="cursive"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:layout_width="wrap_content"
         android:layout_height="50dp"/>
 
@@ -55,7 +55,7 @@
         android:id="@+id/wind_val"
         android:layout_weight="2"
         android:layout_gravity="center"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:gravity="center"
         android:fontFamily="cursive"
         android:layout_width="wrap_content"
