@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ActivitiesAndFragments.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".ActivitiesAndFragments.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -27,6 +27,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ActivitiesAndFragments.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:parentActivityName=".ActivitiesAndFragments.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.team.jz.weather.ActivitiesAndFragments.MainActivity" />
         </activity>
     </application>
 

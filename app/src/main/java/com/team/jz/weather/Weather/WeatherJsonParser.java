@@ -62,7 +62,7 @@ public class WeatherJsonParser {
             double longitude = coordObject.optDouble(Utilities.LONGITUDE_PARAMETER);
             double latitude = coordObject.optDouble(Utilities.LATITUDE_PARAMETER);
             String country = coordObject.optString(Utilities.COUNTRY);
-            String city = coordObject.optString(Utilities.CITY_NAME);
+            String city = cityObject.optString(Utilities.CITY_NAME);
 
             for(int i = 0;i<daysWeatherList.length();i+=8){
 

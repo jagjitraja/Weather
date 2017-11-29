@@ -3,15 +3,21 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:icon="@drawable/ic_info_black_24dp"
-        android:title="@string/pref_header_general" />
+        android:icon="@drawable/icons8_temperature_26"
+        android:title="@string/units"
+        android:fragment="com.team.jz.weather.ActivitiesAndFragments.SettingsActivity$GeneralPreferenceFragment"/>
 
-    <header
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/pref_header_notifications" />
+    <!--<header-->
+        <!--android:icon="@drawable/ic_notifications_black_24dp"-->
+        <!--android:title="@string/pref_header_notifications" />-->
 
     <header
         android:icon="@drawable/ic_sync_black_24dp"
-        android:title="@string/pref_header_data_sync" />
+        android:title="@string/pref_header_data_sync"
+        android:fragment="com.team.jz.weather.ActivitiesAndFragments.SettingsActivity$DataSyncPreferenceFragment"/>
+
+    <header
+        android:icon="@drawable/icons8_view_terms_of_use_26"
+        android:title="@string/about" />
 
 </preference-headers>

@@ -6,28 +6,38 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
 <!--TODO:  Check the layout of weather details, it overlay the bottom navigation-->
+
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+
     <TextView
         android:id="@+id/day"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginRight="20dp"
+        android:textSize="20dp"
         android:layout_weight="1"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:maxWidth="35dp"
+        android:background="@color/colorAccent"
         android:id="@+id/forecast_image" />
 
     <TextView
         android:id="@+id/temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_weight="1"
+
         android:layout_marginLeft="85dp"
         android:textAppearance="?attr/textAppearanceListItem" />
+
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="20dp" />
+
 
 
 
