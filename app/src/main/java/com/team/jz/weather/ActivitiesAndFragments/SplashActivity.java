@@ -96,6 +96,14 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
         @Override
         public void run() {
 
+            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+            intent.putExtra(WEATHER_READING_KEY, fetchedWeatherReadings);
+            startActivity(intent);
+            Log.d("Error running", " Emulator run error");
+            Log.d(fetchedWeatherReadings.toString(), "run: ");
+            SplashActivity.this.finish();
+
+
             if(fetchedWeatherReadings!=null) {
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 intent.putExtra(WEATHER_READING_KEY, fetchedWeatherReadings);
@@ -106,6 +114,7 @@ public class SplashActivity extends AppCompatActivity implements DownloadCallbac
             else{
                 dialogueMethods.showExplanationDialogue("We run into an error, please retry!",SplashActivity.this);
             }
+
         }
     };
 

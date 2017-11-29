@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="50dp"
     android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+<!--TODO:  Check the layout of weather details, it overlay the bottom navigation-->
+
     android:paddingLeft="20dp"
     android:paddingRight="20dp">
+
 
     <TextView
         android:id="@+id/day"
@@ -25,9 +30,14 @@
     <TextView
         android:id="@+id/temp"
         android:layout_weight="1"
+
+        android:layout_marginLeft="85dp"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textSize="20dp" />
+
 
 
 

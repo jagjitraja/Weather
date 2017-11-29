@@ -18,7 +18,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/forecast_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:overScrollMode="always"
         tools:listitem="@layout/forecast_weather_reading_item"
         android:layout_below="@+id/today_data"
