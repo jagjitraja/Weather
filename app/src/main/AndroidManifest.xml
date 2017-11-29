@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ActivitiesAndFragments.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".ActivitiesAndFragments.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -31,6 +31,7 @@
         <activity
             android:name=".ActivitiesAndFragments.SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:parentActivityName=".ActivitiesAndFragments.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
