@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
         city = weatherReadings.get(0).getCity();
         fetchDataTask = new FetchDataTask(getApplicationContext(),this);
         fetchDataTask.execute(Utilities.FORECAST_WEATHER,city);
+        weatherDetailFragment.updateWeatherReadings(weatherReadings);
     }
 
     @Override

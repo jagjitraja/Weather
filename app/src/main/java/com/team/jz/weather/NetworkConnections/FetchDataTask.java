@@ -59,6 +59,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<WeatherR
         }
         Log.d(unitVal+"88888888888888888888", "doInBackground: ");
 
+        sharedPreferences.edit().putString("units_pref_list",c+"").apply();
         //strings[0] = TODAY OR FORECAST
         //strings[1] = CITY OR ZIP
         ArrayList<WeatherReading> weatherReadings = null;

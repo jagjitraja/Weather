@@ -55,8 +55,6 @@ public class WeatherDetailFragment extends Fragment {
         View weatherDetailView = inflater.inflate(R.layout.fragment_weather_detail,container,false);
 
         View view = weatherDetailView.findViewById(R.id.background_image);
-
-
         view.setBackgroundResource(weatherReadings.get(0).getBackground());
         view.getBackground().setAlpha(200);
         city = (TextView) weatherDetailView.findViewById(R.id.city_name);
@@ -70,9 +68,7 @@ public class WeatherDetailFragment extends Fragment {
         wind_speed = (TextView) weatherDetailView.findViewById(R.id.wind_val);
         weatherIcon.setBackgroundResource(weatherReadings.get(0).getWeatherIcon());
         sharedPreferences = PreferenceManager.
-                getDefaultSharedPreferences(getContext());
-        getUnit();
-
+                getDefaultSharedPreferences(getActivity());
         Button shareButton = (Button) weatherDetailView.findViewById(R.id.shareButton);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +100,7 @@ public class WeatherDetailFragment extends Fragment {
         list.setAdapter(new WeatherReadingForecastAdapter(getContext(),R.layout.forecast_weather_reading_item,
                 weatherReadings.subList(1,weatherReadings.size())));
 
-        sharedPreferences = getContext().getSharedPreferences(SettingsActivity.SHARED_PREFS_KEY, Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences(SettingsActivity.SHARED_PREFS_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor s = sharedPreferences.edit();
         s.putString(weatherReadings.get(0).getCity(),CITY_PREF_KEY).apply();
         s.commit();
@@ -112,7 +108,7 @@ public class WeatherDetailFragment extends Fragment {
     }
     private String getUnit(){
         int c = Integer.parseInt(sharedPreferences.getString("units_pref_list","0"));
-        String unit = " C";
+        String unit;
         if(c==0){
             unit = " C";
         }else{
@@ -122,12 +118,11 @@ public class WeatherDetailFragment extends Fragment {
     }
 
     public void updateWeatherReadings(ArrayList<WeatherReading> weatherReadings){
-
         this.weatherReadings = weatherReadings;
         if(weatherIcon!=null){
             weatherIcon.setBackgroundResource(weatherReadings.get(0).getWeatherIcon());
             city.setText(weatherReadings.get(0).getCity());
-            temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+" C");
+            temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+getUnit());
             type.setText(weatherReadings.get(0).getWeatherType().toString());
 
             min_temp.setText(weatherReadings.get(0).getMin_temperature()+getResources().getString(R.string.super_script)+getUnit());

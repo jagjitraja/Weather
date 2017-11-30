@@ -14,14 +14,19 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_city_button"
+        style="@style/Widget.Design.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="15dp"
+        android:background="@drawable/ic_add_black_24dp"
+        app:backgroundTint="@color/bottom_nav_color"
+        app:backgroundTintMode="src_in"
         app:elevation="4dp"
-        android:id="@+id/add_city_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        app:rippleColor="@color/bottom_nav_color" />
 </RelativeLayout>
