@@ -214,7 +214,7 @@ public class WeatherReading implements Serializable {
             case CLOUDS:
                 return R.drawable.cloudy;
             case CLEAR:
-                return R.drawable.clear_night;
+                return R.drawable.sun;
             case SUNNY:
                 return R.drawable.sunny;
             default:
