@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
@@ -38,13 +39,13 @@ public class WeatherDetailFragment extends Fragment {
     private TextView pressure ;
     private TextView wind_speed;
     private  ListView list;
+    private SharedPreferences sharedPreferences;
     public WeatherDetailFragment(){
 
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -67,17 +68,10 @@ public class WeatherDetailFragment extends Fragment {
         humidity = (TextView) weatherDetailView.findViewById(R.id.humidity_val);
         pressure = (TextView) weatherDetailView.findViewById(R.id.pressure_val);
         wind_speed = (TextView) weatherDetailView.findViewById(R.id.wind_val);
-
         weatherIcon.setBackgroundResource(weatherReadings.get(0).getWeatherIcon());
-        SharedPreferences sharedPreferences = PreferenceManager.
+        sharedPreferences = PreferenceManager.
                 getDefaultSharedPreferences(getContext());
-        int c = Integer.parseInt(sharedPreferences.getString("units_pref_list","0"));
-        String unit = " C";
-        if(c==0){
-            unit = " C";
-        }else{
-            unit = " F";
-        }
+        getUnit();
 
         Button shareButton = (Button) weatherDetailView.findViewById(R.id.shareButton);
         shareButton.setOnClickListener(new View.OnClickListener() {
@@ -95,12 +89,12 @@ public class WeatherDetailFragment extends Fragment {
 
             }
         });
-
+//TODO: OPTIMIZE THESE
         city.setText(weatherReadings.get(0).getCity());
-        temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+unit);
+        temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+getUnit());
         type.setText(weatherReadings.get(0).getWeatherType().toString());
-        min_temp.setText(weatherReadings.get(0).getMin_temperature()+getResources().getString(R.string.super_script)+unit);
-        max_temp.setText(weatherReadings.get(0).getMax_temperature()+getResources().getString(R.string.super_script)+unit);
+        min_temp.setText(weatherReadings.get(0).getMin_temperature()+getResources().getString(R.string.super_script)+getUnit());
+        max_temp.setText(weatherReadings.get(0).getMax_temperature()+getResources().getString(R.string.super_script)+getUnit());
         humidity.setText(weatherReadings.get(0).getHumidity()+" %");
         pressure.setText(weatherReadings.get(0).getPressure()+" hpa");
         wind_speed.setText(weatherReadings.get(0).getWind_speed()+"m/s\n"+weatherReadings.get(0).getWind_direction()+"deg");
@@ -116,6 +110,16 @@ public class WeatherDetailFragment extends Fragment {
         s.commit();
         return weatherDetailView;
     }
+    private String getUnit(){
+        int c = Integer.parseInt(sharedPreferences.getString("units_pref_list","0"));
+        String unit = " C";
+        if(c==0){
+            unit = " C";
+        }else{
+            unit = " F";
+        }
+        return unit;
+    }
 
     public void updateWeatherReadings(ArrayList<WeatherReading> weatherReadings){
 
@@ -125,8 +129,9 @@ public class WeatherDetailFragment extends Fragment {
             city.setText(weatherReadings.get(0).getCity());
             temp.setText(weatherReadings.get(0).getTemp()+getResources().getString(R.string.super_script)+" C");
             type.setText(weatherReadings.get(0).getWeatherType().toString());
-            min_temp.setText(weatherReadings.get(0).getMin_temperature()+getResources().getString(R.string.super_script)+" C");
-            max_temp.setText(weatherReadings.get(0).getMax_temperature()+getResources().getString(R.string.super_script)+" C");
+
+            min_temp.setText(weatherReadings.get(0).getMin_temperature()+getResources().getString(R.string.super_script)+getUnit());
+            max_temp.setText(weatherReadings.get(0).getMax_temperature()+getResources().getString(R.string.super_script)+getUnit());
             humidity.setText(weatherReadings.get(0).getHumidity()+" %");
             pressure.setText(weatherReadings.get(0).getPressure()+" hpa");
             wind_speed.setText(weatherReadings.get(0).getWind_speed()+"m/s\n"+weatherReadings.get(0).getWind_direction()+"deg");

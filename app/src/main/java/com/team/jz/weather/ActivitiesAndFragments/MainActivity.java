@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
 
             switch (item.getItemId()){
                 case R.id.details_tab:
+                    refreshData();
                     weatherDetailFragment = (WeatherDetailFragment) fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG);
                     if(weatherDetailFragment!=null) {
                         if (fragmentManager.findFragmentByTag(WEATHER_FRAG_TAG).isAdded()) {
@@ -181,7 +182,9 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
     };
 
     private void refreshData() {
-        fetchDataTask.execute(Utilities.FORECAST_WEATHER);
+        city = weatherReadings.get(0).getCity();
+        fetchDataTask = new FetchDataTask(getApplicationContext(),this);
+        fetchDataTask.execute(Utilities.FORECAST_WEATHER,city);
     }
 
     @Override
@@ -226,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements DownloadCallback 
             return;
         }
         weatherReadings = weatherReading;
+        city = weatherReading.get(0).getCity();
         goToWeatherDataFragment();
     }
 
