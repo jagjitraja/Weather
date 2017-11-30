@@ -119,7 +119,12 @@ public class DialogueMethods implements DownloadCallback {
 
         final EditText editText = (EditText) v.findViewById(R.id.city_search);
         addCityDialogueBuilder.setPositiveButton(R.string.add, null);
-        addCityDialogueBuilder.setCancelable(false);
+        addCityDialogueBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
         final AlertDialog addDialogue = addCityDialogueBuilder.create();
 
         //TO HANDLE THE SEARCH BUTTON CLICK EVENT

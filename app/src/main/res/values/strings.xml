@@ -107,4 +107,5 @@
     <string name="internet_connection">No Internet connection detected!</string>
     <string name="already_saveed">City already saved</string>
     <string name="share">Share this weather with friends!!</string>
+    <string name="cancel">Cancel</string>
 </resources>
