@@ -117,8 +117,10 @@ public class WeatherDetailFragment extends Fragment {
         return unit;
     }
 
-    public void updateWeatherReadings(ArrayList<WeatherReading> weatherReadings){
-        this.weatherReadings = weatherReadings;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
         if(weatherIcon!=null){
             weatherIcon.setBackgroundResource(weatherReadings.get(0).getWeatherIcon());
             city.setText(weatherReadings.get(0).getCity());
@@ -130,10 +132,13 @@ public class WeatherDetailFragment extends Fragment {
             humidity.setText(weatherReadings.get(0).getHumidity()+" %");
             pressure.setText(weatherReadings.get(0).getPressure()+" hpa");
             wind_speed.setText(weatherReadings.get(0).getWind_speed()+"m/s\n"+weatherReadings.get(0).getWind_direction()+"deg");
-
             list.setAdapter(new WeatherReadingForecastAdapter(getContext(),R.layout.forecast_weather_reading_item,
                     weatherReadings.subList(1,weatherReadings.size())));
         }
+    }
+
+    public void updateWeatherReadings(ArrayList<WeatherReading> weatherReadings){
+        this.weatherReadings = weatherReadings;
     }
 
 }
